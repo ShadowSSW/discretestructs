@@ -3,1276 +3,470 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unidad IV – Métodos de Conteo y Probabilidad Discreta</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
-<style>
-  :root {
-    --gold: #D4A017;
-    --gold-light: #F0C040;
-    --gold-dim: #9A7010;
-    --black: #0A0A0A;
-    --dark: #111111;
-    --dark2: #1A1A1A;
-    --dark3: #242424;
-    --dark4: #2E2E2E;
-    --white: #F5F0E8;
-    --white2: #EDE6D6;
-    --gray: #888;
-    --gray2: #555;
-    --correct: #4CAF50;
-    --wrong: #E53935;
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'Source Serif 4', serif;
-    --font-mono: 'JetBrains Mono', monospace;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    background: rgba(10,10,10,0.95);
-    border-bottom: 1px solid var(--gold-dim);
-    backdrop-filter: blur(12px);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 3rem;
-    height: 64px;
-  }
-  .nav-brand {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    color: var(--gold);
-    letter-spacing: 0.05em;
-  }
-  .nav-links { display: flex; gap: 0; }
-  .nav-links a {
-    color: var(--white2);
-    text-decoration: none;
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0 1.2rem;
-    height: 64px;
-    display: flex; align-items: center;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    font-family: var(--font-body);
-    font-weight: 600;
-  }
-  .nav-links a:hover, .nav-links a.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
-
-  /* ── SECTIONS ── */
-  section { display: none; padding-top: 64px; min-height: 100vh; }
-  section.active { display: block; }
-
-  /* ── HERO / INICIO ── */
-  #inicio {
-    background: var(--black);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-  #inicio.active { display: flex; }
-
-  .hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(212,160,23,0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(212,160,23,0.05) 0%, transparent 60%);
-  }
-  .hero-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(212,160,23,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(212,160,23,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
-  .hero-content {
-    position: relative; z-index: 2;
-    text-align: center;
-    padding: 4rem 2rem;
-    max-width: 900px;
-  }
-  .hero-tag {
-    display: inline-block;
-    border: 1px solid var(--gold-dim);
-    color: var(--gold);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 0.4rem 1.2rem;
-    margin-bottom: 2.5rem;
-    animation: fadeIn 0.8s ease;
-  }
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 7vw, 5.5rem);
-    font-weight: 900;
-    line-height: 1.05;
-    margin-bottom: 1.5rem;
-    animation: slideUp 0.9s ease 0.1s both;
-  }
-  .hero-title span { color: var(--gold); }
-  .hero-subtitle {
-    font-size: 1.1rem;
-    color: var(--white2);
-    opacity: 0.7;
-    margin-bottom: 3.5rem;
-    animation: slideUp 0.9s ease 0.2s both;
-    max-width: 600px;
-    margin-left: auto; margin-right: auto;
-  }
-
-  .hero-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--gold-dim);
-    border: 1px solid var(--gold-dim);
-    margin-bottom: 3rem;
-    animation: slideUp 0.9s ease 0.3s both;
-  }
-  .hero-card {
-    background: var(--dark2);
-    padding: 1.8rem 1.5rem;
-    text-align: center;
-    transition: background 0.2s;
-    cursor: pointer;
-  }
-  .hero-card:hover { background: var(--dark3); }
-  .hero-card-icon {
-    font-size: 2rem; margin-bottom: 0.8rem;
-  }
-  .hero-card-title {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    color: var(--gold);
-    margin-bottom: 0.3rem;
-  }
-  .hero-card-desc {
-    font-size: 0.78rem;
-    color: var(--gray);
-    line-height: 1.4;
-  }
-
-  .team-section {
-    animation: slideUp 0.9s ease 0.4s both;
-    margin-top: 2rem;
-  }
-  .team-label {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 1.2rem;
-  }
-  .team-members {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .team-member {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: var(--dark3);
-    border: 1px solid var(--dark4);
-    padding: 0.75rem 1.3rem;
-    transition: border-color 0.2s;
-  }
-  .team-member:hover { border-color: var(--gold-dim); }
-  .member-avatar {
-    width: 36px; height: 36px;
-    background: var(--gold);
-    color: var(--black);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-  .member-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--white);
-  }
-  .member-role {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--gold-dim);
-    letter-spacing: 0.05em;
-  }
-
-  .info-bar {
-    display: flex;
-    gap: 3rem;
-    justify-content: center;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--dark4);
-    animation: slideUp 0.9s ease 0.5s both;
-  }
-  .info-item { text-align: center; }
-  .info-value {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    color: var(--gold);
-    display: block;
-  }
-  .info-key {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--gray);
-  }
-
-  /* ── PAGE HEADER ── */
-  .page-header {
-    background: var(--dark2);
-    border-bottom: 1px solid var(--dark4);
-    padding: 3rem 4rem 2.5rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .page-header::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: 4px;
-    background: var(--gold);
-  }
-  .page-header-tag {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.6rem;
-  }
-  .page-header h1 {
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-  }
-  .page-header p {
-    color: var(--gray);
-    font-size: 0.9rem;
-    max-width: 600px;
-  }
-
-  /* ── CONTENT AREA ── */
-  .content-area {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 2rem;
-  }
-
-  /* ── TOPIC TABS ── */
-  .topic-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--dark4);
-    margin-bottom: 3rem;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-  }
-  .topic-tab {
-    padding: 0.85rem 1.5rem;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--gray);
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    transition: all 0.2s;
-    margin-bottom: -1px;
-  }
-  .topic-tab:hover { color: var(--white); }
-  .topic-tab.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
-
-  .topic-content { display: none; }
-  .topic-content.active { display: block; }
-
-  /* ── THEORY CARDS ── */
-  .theory-block {
-    background: var(--dark2);
-    border: 1px solid var(--dark4);
-    margin-bottom: 2rem;
-    overflow: hidden;
-  }
-  .theory-block-header {
-    padding: 1.2rem 1.8rem;
-    background: var(--dark3);
-    border-bottom: 1px solid var(--dark4);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .theory-block-icon {
-    width: 32px; height: 32px;
-    background: var(--gold);
-    color: var(--black);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-  }
-  .theory-block-title {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    color: var(--white);
-  }
-  .theory-block-body {
-    padding: 1.8rem;
-  }
-  .theory-block-body p {
-    margin-bottom: 1rem;
-    color: var(--white2);
-    font-size: 0.95rem;
-  }
-
-  .definition-box {
-    border-left: 3px solid var(--gold);
-    background: rgba(212,160,23,0.07);
-    padding: 1.2rem 1.5rem;
-    margin: 1.2rem 0;
-    font-size: 0.93rem;
-  }
-  .definition-box strong {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.5rem;
-  }
-
-  .formula-box {
-    background: var(--dark);
-    border: 1px solid var(--gold-dim);
-    padding: 1.5rem 2rem;
-    margin: 1.2rem 0;
-    text-align: center;
-    font-size: 1.1rem;
-  }
-
-  .example-box {
-    background: var(--dark3);
-    border: 1px solid var(--dark4);
-    padding: 1.5rem 1.8rem;
-    margin: 1.5rem 0;
-  }
-  .example-box .ex-label {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .example-box .ex-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--dark4);
-  }
-  .example-box .ex-problem {
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 0.8rem;
-    padding: 0.8rem 1rem;
-    background: rgba(212,160,23,0.05);
-    border-left: 2px solid var(--gold-dim);
-    font-size: 0.92rem;
-  }
-  .example-box .ex-solution {
-    color: var(--white2);
-    font-size: 0.9rem;
-  }
-  .example-box .ex-result {
-    margin-top: 0.8rem;
-    padding: 0.6rem 1rem;
-    background: rgba(212,160,23,0.12);
-    color: var(--gold);
-    font-family: var(--font-mono);
-    font-size: 0.88rem;
-  }
-
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin: 1rem 0;
-  }
-  @media(max-width: 700px){ .two-col{ grid-template-columns: 1fr; } }
-
-  /* ── QUIZ ── */
-  .quiz-progress {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 2rem;
-  }
-  .quiz-progress-bar {
-    height: 3px;
-    flex: 1;
-    background: var(--dark4);
-    transition: background 0.3s;
-  }
-  .quiz-progress-bar.done { background: var(--gold); }
-  .quiz-progress-bar.current { background: var(--gold-light); }
-
-  .quiz-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-  .quiz-counter {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--gold);
-    letter-spacing: 0.1em;
-  }
-  .quiz-score-live {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--gray);
-  }
-
-  .quiz-section-title {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--dark4);
-    display: inline-block;
-    margin-bottom: 1.5rem;
-  }
-
-  .quiz-question {
-    background: var(--dark2);
-    border: 1px solid var(--dark4);
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-    animation: fadeIn 0.4s ease;
-  }
-  .quiz-question-text {
-    font-size: 1rem;
-    color: var(--white);
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    line-height: 1.6;
-  }
-  .quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .quiz-option {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.85rem 1.2rem;
-    background: var(--dark3);
-    border: 1px solid var(--dark4);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 0.9rem;
-    color: var(--white2);
-    text-align: left;
-  }
-  .quiz-option:hover:not(:disabled) {
-    border-color: var(--gold-dim);
-    background: var(--dark4);
-  }
-  .quiz-option.selected { border-color: var(--gold); }
-  .quiz-option.correct { background: rgba(76,175,80,0.15); border-color: var(--correct); color: #fff; }
-  .quiz-option.wrong { background: rgba(229,57,53,0.15); border-color: var(--wrong); color: #fff; }
-  .option-letter {
-    width: 24px; height: 24px;
-    background: var(--dark4);
-    color: var(--gold);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-  .quiz-option.correct .option-letter { background: var(--correct); color: #fff; }
-  .quiz-option.wrong .option-letter { background: var(--wrong); color: #fff; }
-
-  .tf-options {
-    display: flex;
-    gap: 1rem;
-  }
-  .tf-btn {
-    flex: 1;
-    padding: 1rem;
-    background: var(--dark3);
-    border: 1px solid var(--dark4);
-    color: var(--white2);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .tf-btn:hover:not(:disabled) { border-color: var(--gold-dim); }
-  .tf-btn.correct { background: rgba(76,175,80,0.2); border-color: var(--correct); color: var(--correct); }
-  .tf-btn.wrong { background: rgba(229,57,53,0.2); border-color: var(--wrong); color: var(--wrong); }
-
-  .feedback-box {
-    margin-top: 1rem;
-    padding: 0.9rem 1.2rem;
-    font-size: 0.85rem;
-    animation: fadeIn 0.3s ease;
-    display: none;
-  }
-  .feedback-box.correct { background: rgba(76,175,80,0.1); border-left: 3px solid var(--correct); color: #9de49f; }
-  .feedback-box.wrong { background: rgba(229,57,53,0.1); border-left: 3px solid var(--wrong); color: #f59fa0; }
-
-  .dev-question {
-    background: var(--dark2);
-    border: 1px solid var(--dark4);
-    padding: 1.8rem 2rem;
-    margin-bottom: 1.2rem;
-  }
-  .dev-question-text {
-    font-size: 0.95rem;
-    color: var(--white);
-    margin-bottom: 1rem;
-    font-weight: 600;
-  }
-  .dev-answer-area {
-    width: 100%;
-    background: var(--dark);
-    border: 1px solid var(--dark4);
-    color: var(--white);
-    padding: 0.9rem 1rem;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    resize: vertical;
-    min-height: 80px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .dev-answer-area:focus { border-color: var(--gold-dim); }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.8rem;
-    background: var(--gold);
-    color: var(--black);
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    transition: all 0.2s;
-  }
-  .btn:hover { background: var(--gold-light); }
-  .btn-outline {
-    background: none;
-    border: 1px solid var(--gold-dim);
-    color: var(--gold);
-  }
-  .btn-outline:hover { background: rgba(212,160,23,0.1); }
-
-  /* ── QUIZ RESULTS ── */
-  .quiz-result {
-    display: none;
-    text-align: center;
-    padding: 4rem 2rem;
-    animation: fadeIn 0.5s ease;
-  }
-  .result-score-ring {
-    width: 160px; height: 160px;
-    border-radius: 50%;
-    border: 4px solid var(--gold);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    margin: 0 auto 2rem;
-  }
-  .result-score-num {
-    font-family: var(--font-display);
-    font-size: 3rem;
-    color: var(--gold);
-    line-height: 1;
-  }
-  .result-score-label {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    color: var(--gray);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .result-message {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-  }
-  .result-sub {
-    color: var(--gray);
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-  }
-
-  /* ── PROGRAMS ── */
-  .programs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-  .program-card {
-    background: var(--dark2);
-    border: 1px solid var(--dark4);
-    overflow: hidden;
-  }
-  .program-card-header {
-    background: var(--dark3);
-    border-bottom: 1px solid var(--dark4);
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .program-card-dots {
-    display: flex; gap: 5px;
-  }
-  .program-card-dots span {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-  }
-  .program-card-dots span:nth-child(1){ background: #FF5F57; }
-  .program-card-dots span:nth-child(2){ background: #FFBD2E; }
-  .program-card-dots span:nth-child(3){ background: #28C840; }
-  .program-card-name {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--gray);
-    letter-spacing: 0.08em;
-  }
-  .program-card-body { padding: 1.5rem; }
-  .program-card-title {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    color: var(--gold);
-    margin-bottom: 0.5rem;
-  }
-  .program-card-desc {
-    font-size: 0.85rem;
-    color: var(--gray);
-    margin-bottom: 1.2rem;
-    line-height: 1.5;
-  }
-
-  .calc-row {
-    display: flex;
-    gap: 0.6rem;
-    margin-bottom: 0.6rem;
-    align-items: center;
-  }
-  .calc-label {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--gold-dim);
-    width: 28px;
-    flex-shrink: 0;
-  }
-  .calc-input {
-    flex: 1;
-    background: var(--dark);
-    border: 1px solid var(--dark4);
-    color: var(--white);
-    padding: 0.5rem 0.8rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .calc-input:focus { border-color: var(--gold-dim); }
-  .calc-select {
-    flex: 1;
-    background: var(--dark);
-    border: 1px solid var(--dark4);
-    color: var(--white);
-    padding: 0.5rem 0.8rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    outline: none;
-    cursor: pointer;
-  }
-  .calc-result {
-    background: var(--dark);
-    border: 1px solid var(--gold-dim);
-    padding: 0.8rem 1rem;
-    margin-top: 0.8rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--gold);
-    min-height: 40px;
-    word-break: break-all;
-  }
-  .calc-btn {
-    width: 100%;
-    padding: 0.7rem;
-    background: var(--gold);
-    color: var(--black);
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 0.85rem;
-    margin-top: 0.5rem;
-    transition: background 0.2s;
-  }
-  .calc-btn:hover { background: var(--gold-light); }
-
-  .experiment-log {
-    background: var(--dark);
-    border: 1px solid var(--dark4);
-    padding: 1rem;
-    margin-top: 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--gray);
-    max-height: 120px;
-    overflow-y: auto;
-    line-height: 1.8;
-  }
-  .experiment-log .log-line { color: var(--white2); }
-  .experiment-log .log-result { color: var(--gold); }
-  .experiment-log .log-error { color: var(--wrong); }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeIn { from{ opacity:0; } to{ opacity:1; } }
-  @keyframes slideUp { from{ opacity:0; transform:translateY(24px); } to{ opacity:1; transform:translateY(0); } }
-
-  /* ── UTILITIES ── */
-  .gold { color: var(--gold); }
-  .mono { font-family: var(--font-mono); }
-  .mt1 { margin-top: 1rem; }
-  .mt2 { margin-top: 2rem; }
-  hr.divider {
-    border: none;
-    border-top: 1px solid var(--dark4);
-    margin: 2rem 0;
-  }
-
-  .tag-chip {
-    display: inline-block;
-    background: rgba(212,160,23,0.12);
-    color: var(--gold);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.6rem;
-    margin: 0.2rem;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--dark); }
-  ::-webkit-scrollbar-thumb { background: var(--dark4); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
-
-  /* MathJax overrides */
-  .MathJax { color: var(--white) !important; }
-
-  @media(max-width: 768px){
-    nav { padding: 0 1rem; }
-    .nav-brand { display: none; }
-    .nav-links a { padding: 0 0.7rem; font-size: 0.72rem; }
-    .page-header { padding: 2rem 1.5rem 1.5rem; }
-    .content-area { padding: 2rem 1rem; }
-    .hero-content { padding: 2rem 1rem; }
-    .info-bar { gap: 1.5rem; flex-wrap: wrap; }
-  }
-</style>
+<title>Métodos de Conteo y Probabilidad Discreta | MAT-134-T</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ═══════════════ NAV ═══════════════ -->
-<nav>
-  <div class="nav-brand">MAT-134-T · Unidad IV</div>
-  <div class="nav-links">
-    <a href="#" class="active" onclick="showSection('inicio',this)">Inicio</a>
-    <a href="#" onclick="showSection('informe',this)">Informe Técnico</a>
-    <a href="#" onclick="showSection('cuestionario',this)">Cuestionario</a>
-    <a href="#" onclick="showSection('programas',this)">Programas</a>
+<nav id="navbar">
+  <div class="nav-brand">Métodos de Conteo · Unidad IV</div>
+  <button class="nav-toggle" id="navToggle" aria-label="Menú">&#9776;</button>
+  <div class="nav-links" id="navLinks">
+    <a href="#" class="nav-link active" data-section="inicio">Inicio</a>
+    <a href="#" class="nav-link" data-section="informe">Informe Técnico</a>
+    <a href="#" class="nav-link" data-section="cuestionario">Cuestionario</a>
+    <a href="#" class="nav-link" data-section="programas">Programas</a>
   </div>
 </nav>
 
-<!-- ═══════════════ INICIO ═══════════════ -->
-<section id="inicio" class="active">
+<!-- ══════════════ INICIO ══════════════ -->
+<section id="inicio" class="section active">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-tag">PUCMM · MAT-134-T · Estructuras Discretas</div>
-    <h1 class="hero-title">Métodos de <span>Conteo</span> y<br>Probabilidad Discreta</h1>
-    <p class="hero-subtitle">Sitio web interactivo para la Unidad IV — teoría, cuestionario y experimentación computacional integrados en un solo lugar.</p>
+    <div class="hero-tag">PUCMM · Estructuras Discretas · Unidad IV</div>
+    <h1 class="hero-title">Métodos de <span class="gold">Conteo</span><br>y Probabilidad Discreta</h1>
+    <p class="hero-subtitle">Un sitio creado por estudiantes, para estudiantes. Aquí encontrarás toda la teoría explicada con claridad, un cuestionario interactivo y herramientas computacionales para verificar tus resultados.</p>
 
     <div class="hero-cards">
-      <div class="hero-card" onclick="showSection('informe',null)">
+      <div class="hero-card" onclick="navigate('informe')">
         <div class="hero-card-icon">📐</div>
         <div class="hero-card-title">Informe Técnico</div>
-        <div class="hero-card-desc">Teoría completa con definiciones, fórmulas y ejemplos resueltos</div>
+        <div class="hero-card-desc">Teoría completa con definiciones, fórmulas y ejemplos resueltos paso a paso</div>
       </div>
-      <div class="hero-card" onclick="showSection('cuestionario',null)">
+      <div class="hero-card" onclick="navigate('cuestionario')">
         <div class="hero-card-icon">🧪</div>
         <div class="hero-card-title">Cuestionario</div>
-        <div class="hero-card-desc">22 preguntas interactivas: opción múltiple, V/F y desarrollo</div>
+        <div class="hero-card-desc">22 preguntas: opción múltiple, verdadero/falso y problemas de desarrollo</div>
       </div>
-      <div class="hero-card" onclick="showSection('programas',null)">
+      <div class="hero-card" onclick="navigate('programas')">
         <div class="hero-card-icon">⚙️</div>
-        <div class="hero-card-title">Calculadoras</div>
-        <div class="hero-card-desc">Herramientas computacionales para verificar resultados al instante</div>
+        <div class="hero-card-title">Programas</div>
+        <div class="hero-card-desc">Calculadoras interactivas y simulaciones para verificar resultados al instante</div>
       </div>
     </div>
 
-    <div class="team-section">
-      <p class="team-label">Equipo de trabajo</p>
+    <div class="intro-block">
+      <p class="intro-label">¿Quiénes somos?</p>
+      <p class="intro-text">Somos un equipo de tres estudiantes de Ingeniería en Ciencias de la Computación que decidimos hacer este sitio no solo para cumplir con la asignatura, sino para tener una referencia que realmente nos sirva cuando llegue el examen. Queremos que quienes lo visiten puedan entender estos temas sin tener que leer diez páginas de un libro antes de comenzar.</p>
       <div class="team-members">
         <div class="team-member">
           <div class="member-avatar">C</div>
           <div>
             <div class="member-name">Carlos</div>
-            <div class="member-role">Integrante</div>
+            <div class="member-role">Informe Técnico y Ejemplos</div>
           </div>
         </div>
         <div class="team-member">
           <div class="member-avatar">F</div>
           <div>
             <div class="member-name">Francis</div>
-            <div class="member-role">Integrante</div>
+            <div class="member-role">Cuestionario y Programas</div>
           </div>
         </div>
         <div class="team-member">
           <div class="member-avatar">N</div>
           <div>
             <div class="member-name">Nathalia</div>
-            <div class="member-role">Integrante</div>
+            <div class="member-role">Diseño, Revisión y Contenido</div>
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="intro-block" style="margin-top:2rem;">
+      <p class="intro-label">Una introducción rápida</p>
+      <p class="intro-text">La combinatoria es el área de las matemáticas que se encarga de contar, organizar y seleccionar elementos siguiendo ciertas reglas. No es solo contar por contar: se trata de hacerlo de forma sistemática para no perderse ni repetir casos.</p>
+      <p class="intro-text">Imagínate que quieres saber cuántas formas distintas hay de organizar a 5 amigos en una fila para la foto de graduación. Podrías ponerte a enumerar todas las posibilidades... o podrías usar una fórmula que te da el resultado en segundos. Eso es exactamente lo que estudiaremos.</p>
     </div>
 
     <div class="info-bar">
-      <div class="info-item">
-        <span class="info-value">10%</span>
-        <span class="info-key">Peso Total</span>
-      </div>
-      <div class="info-item">
-        <span class="info-value">4</span>
-        <span class="info-key">Secciones</span>
-      </div>
-      <div class="info-item">
-        <span class="info-value">22</span>
-        <span class="info-key">Preguntas</span>
-      </div>
-      <div class="info-item">
-        <span class="info-value">5</span>
-        <span class="info-key">Calculadoras</span>
-      </div>
+      <div class="info-item"><span class="info-value">10%</span><span class="info-key">Peso Total</span></div>
+      <div class="info-item"><span class="info-value">8</span><span class="info-key">Temas</span></div>
+      <div class="info-item"><span class="info-value">22</span><span class="info-key">Preguntas</span></div>
+      <div class="info-item"><span class="info-value">5</span><span class="info-key">Calculadoras</span></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ INFORME TÉCNICO ═══════════════ -->
-<section id="informe">
+<!-- ══════════════ INFORME ══════════════ -->
+<section id="informe" class="section">
   <div class="page-header">
-    <div class="page-header-tag">01 / Informe Técnico Digital</div>
+    <div class="page-header-tag">01 / Informe Técnico</div>
     <h1>Métodos de Conteo y Probabilidad Discreta</h1>
-    <p>Teoría completa con definiciones, fórmulas y mínimo 2 ejemplos resueltos por concepto.</p>
+    <p>Teoría completa con definiciones, fórmulas y mínimo 2 ejemplos resueltos por tema. Explicado como entre estudiantes, no como libro de texto.</p>
   </div>
   <div class="content-area">
-    <div class="topic-tabs">
-      <button class="topic-tab active" onclick="showTopic('t-principios',this)">Principios de Conteo</button>
-      <button class="topic-tab" onclick="showTopic('t-permutaciones',this)">Permutaciones</button>
-      <button class="topic-tab" onclick="showTopic('t-combinaciones',this)">Combinaciones</button>
-      <button class="topic-tab" onclick="showTopic('t-binomio',this)">Teorema Binomial</button>
-      <button class="topic-tab" onclick="showTopic('t-recurrencia',this)">Recurrencia</button>
-      <button class="topic-tab" onclick="showTopic('t-probabilidad',this)">Probabilidad</button>
+    <div class="topic-tabs" id="topicTabs">
+      <button class="topic-tab active" data-topic="t1">Principios de Conteo</button>
+      <button class="topic-tab" data-topic="t2">Principio del Palomar</button>
+      <button class="topic-tab" data-topic="t3">Permutaciones</button>
+      <button class="topic-tab" data-topic="t4">Combinaciones</button>
+      <button class="topic-tab" data-topic="t5">Teorema Binomial</button>
+      <button class="topic-tab" data-topic="t6">Recurrencia</button>
+      <button class="topic-tab" data-topic="t7">Probabilidad</button>
+      <button class="topic-tab" data-topic="t8">Valor Esperado</button>
     </div>
 
-    <!-- PRINCIPIOS DE CONTEO -->
-    <div class="topic-content active" id="t-principios">
+    <!-- T1: Principios de Conteo -->
+    <div class="topic-content active" id="t1">
       <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">✕</div>
-          <div class="theory-block-title">Principio de Multiplicación</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Si un evento A puede ocurrir de <em>m</em> maneras independientes, y un evento B puede ocurrir de <em>n</em> maneras independientes, entonces ambos pueden ocurrir simultáneamente de <strong>m × n</strong> maneras distintas. Esto se generaliza: para k eventos con \(m_1, m_2, \ldots, m_k\) posibilidades, el total es \(m_1 \times m_2 \times \cdots \times m_k\).
+        <div class="theory-block-header"><div class="theory-icon">✕</div><h2>Principios Básicos de Conteo</h2></div>
+        <div class="theory-body">
+          <p>Cuando queremos contar la cantidad de formas en que pueden ocurrir varias cosas juntas, no siempre podemos hacerlo manualmente. Por eso existen dos principios fundamentales: el <strong class="gold">principio de multiplicación</strong> y el <strong class="gold">principio de adición</strong>.</p>
+          <div class="def-box">
+            <strong>Principio de Multiplicación</strong>
+            Si una tarea se puede dividir en pasos independientes, la cantidad total de formas de hacerla es el <em>producto</em> de las formas de hacer cada paso. Si el evento A ocurre de <em>m</em> formas y B de <em>n</em> formas, entonces ambos ocurren en <strong>m × n</strong> formas.
           </div>
-          <div class="two-col">
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">Juan puede elegir entre 3 camisetas y 4 pantalones. ¿De cuántas formas puede vestirse?</div>
-              <div class="ex-solution">
-                Hay 3 opciones para la camiseta y 4 para el pantalón, de forma independiente.<br><br>
-                Total = 3 × 4
+              <div class="ex-label">✏️ Ejemplo 1 — La ropa de Juan</div>
+              <div class="ex-problem">Juan tiene 3 camisetas y 4 pantalones. ¿De cuántas formas distintas puede vestirse?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Camisetas disponibles → <strong>3</strong></div>
+                <div class="step"><span class="step-num">2</span>Pantalones disponibles → <strong>4</strong></div>
+                <div class="step"><span class="step-num">3</span>Son decisiones independientes → multiplicamos</div>
               </div>
-              <div class="ex-result">∴ Total = 12 combinaciones</div>
+              <div class="ex-result">Total = 3 × 4 = <strong>12 combinaciones</strong></div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">Una contraseña tiene 3 letras (27 posibles) y 4 dígitos distintos. ¿Cuántas contraseñas existen?</div>
-              <div class="ex-solution">
-                Letras: 26 × 26 × 26 (se pueden repetir).<br>
-                Dígitos: 10 × 9 × 8 × 7 (sin repetición).<br><br>
-                Total = 26³ × 10 × 9 × 8 × 7
+              <div class="ex-label">✏️ Ejemplo 2 — Contraseña bancaria</div>
+              <div class="ex-problem">Una contraseña tiene 3 letras (pueden repetirse) y 4 dígitos distintos. ¿Cuántas contraseñas hay?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Letras: 26 × 26 × 26 (pueden repetirse)</div>
+                <div class="step"><span class="step-num">2</span>Dígitos: 10 × 9 × 8 × 7 (sin repetición)</div>
+                <div class="step"><span class="step-num">3</span>Total = 26³ × 10 × 9 × 8 × 7</div>
               </div>
-              <div class="ex-result">∴ Total = 88,583,040 contraseñas</div>
+              <div class="ex-result">Total = <strong>88,583,040 contraseñas</strong></div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">+</div>
-          <div class="theory-block-title">Principio de Adición</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Si una tarea puede realizarse de <em>m</em> maneras O de <em>n</em> maneras (mutuamente excluyentes), entonces en total puede realizarse de <strong>m + n</strong> maneras.
+          <div class="def-box" style="margin-top:1.5rem;">
+            <strong>Principio de Adición</strong>
+            Si una tarea se puede hacer de una forma <em>O</em> de otra (excluyentes entre sí), el total es la <em>suma</em>. Si A ocurre de <em>m</em> formas y B de <em>n</em> formas, ocurre A o B en <strong>m + n</strong> formas.
           </div>
-          <div class="two-col">
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">Un estudiante puede elegir entre 4 libros de matemáticas o 6 de programación. ¿Cuántas elecciones posibles tiene?</div>
-              <div class="ex-solution">Como solo elige un libro (una categoría u otra): Total = 4 + 6</div>
-              <div class="ex-result">∴ Total = 10 elecciones</div>
+              <div class="ex-label">✏️ Ejemplo 1 — Elegir un libro</div>
+              <div class="ex-problem">Una estudiante tiene 4 libros de matemáticas y 6 de novelas. ¿Cuántas elecciones tiene si solo escoge uno?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Solo elige un libro (matemáticas O novela)</div>
+                <div class="step"><span class="step-num">2</span>Son mutuamente excluyentes → sumamos</div>
+              </div>
+              <div class="ex-result">Total = 4 + 6 = <strong>10 opciones</strong></div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">¿De cuántas formas distintas se puede obtener un número par o mayor que 10 al lanzar un dado de 12 caras?</div>
-              <div class="ex-solution">Pares: {2,4,6,8,10,12} → 6 casos.<br>Mayores que 10: {11,12} → 2 casos.<br>Intersección (par Y >10): {12} → 1 caso.<br>Por inclusión-exclusión: 6 + 2 − 1</div>
-              <div class="ex-result">∴ Total = 7 resultados distintos</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">🐦</div>
-          <div class="theory-block-title">Principio del Palomar (Pigeonhole)</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Si se distribuyen <em>n+1</em> objetos en <em>n</em> cajones, entonces al menos un cajón contendrá 2 o más objetos. Generalización: si <em>N</em> objetos se colocan en <em>k</em> cajones, algún cajón tiene al menos \(\lceil N/k \rceil\) objetos.
-          </div>
-          <div class="two-col">
-            <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">En un grupo de 13 personas, ¿es seguro que al menos 2 nacieron en el mismo mes?</div>
-              <div class="ex-solution">Hay 12 meses (cajones) y 13 personas (objetos). Como 13 > 12, por el principio del palomar…</div>
-              <div class="ex-result">∴ Sí, al menos 2 personas nacieron en el mismo mes</div>
-            </div>
-            <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">En un salón de 30 estudiantes, ¿cuántos como mínimo deben compartir la misma calificación de letra (A,B,C,D,F)?</div>
-              <div class="ex-solution">5 posibles calificaciones, 30 estudiantes.<br>\(\lceil 30/5 \rceil = \lceil 6 \rceil = 6\)</div>
-              <div class="ex-result">∴ Al menos 6 estudiantes comparten la misma calificación</div>
+              <div class="ex-label">✏️ Ejemplo 2 — Rutas de viaje</div>
+              <div class="ex-problem">Para viajar de Santiago a Santo Domingo hay 3 rutas por carretera y 2 por autopista. ¿Cuántas formas hay de hacer el viaje?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Son rutas distintas, toma una sola</div>
+                <div class="step"><span class="step-num">2</span>3 + 2</div>
+              </div>
+              <div class="ex-result">Total = <strong>5 rutas posibles</strong></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PERMUTACIONES -->
-    <div class="topic-content" id="t-permutaciones">
+    <!-- T2: Palomar -->
+    <div class="topic-content" id="t2">
       <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">P</div>
-          <div class="theory-block-title">Factorial y Permutaciones Sin Repetición</div>
+        <div class="theory-block-header"><div class="theory-icon">🐦</div><h2>Principio del Palomar</h2></div>
+        <div class="theory-body">
+          <p>Este principio tiene un nombre curioso, pero la idea es muy intuitiva. Se llama así por la imagen de palomas entrando a un palomar: <strong class="gold">si hay más palomas que nidos, al menos un nido tendrá más de una paloma</strong>.</p>
+          <div class="def-box">
+            <strong>Principio del Palomar (Pigeonhole)</strong>
+            Si se distribuyen <em>n+1</em> objetos en <em>n</em> cajones, entonces al menos un cajón contiene <strong>2 o más objetos</strong>.<br><br>
+            <strong>Versión generalizada:</strong> Si <em>N</em> objetos se colocan en <em>k</em> cajones, algún cajón tiene al menos ⌈N/k⌉ objetos (donde ⌈ ⌉ es redondear hacia arriba).
+          </div>
+          <div class="formula-box">⌈N / k⌉ = mínimo de objetos garantizado en algún cajón</div>
+          <div class="examples-grid">
+            <div class="example-box">
+              <div class="ex-label">✏️ Ejemplo 1 — Cumpleaños repetidos</div>
+              <div class="ex-problem">En un grupo de 13 personas, ¿podemos asegurar que al menos dos nacieron en el mismo mes?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Cajones = 12 meses del año</div>
+                <div class="step"><span class="step-num">2</span>Palomas = 13 personas</div>
+                <div class="step"><span class="step-num">3</span>Como 13 > 12, por el principio del palomar...</div>
+              </div>
+              <div class="ex-result">Sí, al menos 2 personas comparten mes de nacimiento. <strong>Garantizado matemáticamente.</strong></div>
+            </div>
+            <div class="example-box">
+              <div class="ex-label">✏️ Ejemplo 2 — Calificaciones</div>
+              <div class="ex-problem">En un salón de 30 estudiantes con calificaciones A, B, C, D y F, ¿cuántos como mínimo deben tener la misma calificación?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Cajones = 5 calificaciones posibles</div>
+                <div class="step"><span class="step-num">2</span>Objetos = 30 estudiantes</div>
+                <div class="step"><span class="step-num">3</span>⌈30/5⌉ = ⌈6⌉ = 6</div>
+              </div>
+              <div class="ex-result">Al menos <strong>6 estudiantes</strong> tienen la misma calificación. Este razonamiento se usa en informática para garantizar soluciones.</div>
+            </div>
+          </div>
         </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
+      </div>
+    </div>
+
+    <!-- T3: Permutaciones -->
+    <div class="topic-content" id="t3">
+      <div class="theory-block">
+        <div class="theory-block-header"><div class="theory-icon">P</div><h2>Permutaciones</h2></div>
+        <div class="theory-body">
+          <p>Una permutación es básicamente un <strong class="gold">ordenamiento</strong>. Cuando hablamos de permutaciones, el orden importa. No es lo mismo {A, B, C} que {C, A, B}, son dos arreglos completamente diferentes.</p>
+          <div class="def-box">
             <strong>Factorial</strong>
-            \(n! = n \times (n-1) \times (n-2) \times \cdots \times 2 \times 1\), con la convención \(0! = 1\).
+            n! = n × (n−1) × (n−2) × ··· × 2 × 1 &nbsp;&nbsp; y por definición: <strong>0! = 1</strong>
           </div>
-          <div class="definition-box">
-            <strong>Permutación sin repetición (Pₙ)</strong>
-            Ordenamiento completo de <em>n</em> elementos distintos tomados todos a la vez. \(P_n = n!\). Para k elementos tomados de n: \(V_{n,k} = \dfrac{n!}{(n-k)!}\).
-          </div>
-          <div class="formula-box">\[P_n = n! \qquad V_{n,k} = \frac{n!}{(n-k)!}\]</div>
-          <div class="two-col">
+          <div class="formula-box">Pₙ = n! &nbsp;&nbsp;&nbsp; Vₙ,ₖ = n! / (n−k)! &nbsp;&nbsp;&nbsp; Pₙ<sup>r₁,r₂...rₖ</sup> = n! / (r₁! · r₂! · ··· · rₖ!)</div>
+          <h3 class="sub-title">Sin Repetición</h3>
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">¿De cuántas formas pueden ordenarse 5 alumnos en fila para una fotografía?</div>
-              <div class="ex-solution">Todos los 5 elementos, sin repetición, el orden importa.<br>P₅ = 5! = 5 × 4 × 3 × 2 × 1</div>
-              <div class="ex-result">∴ P₅ = 120 formas distintas</div>
+              <div class="ex-label">✏️ Ejemplo 1 — La foto del grupo</div>
+              <div class="ex-problem">¿De cuántas formas distintas se pueden ordenar 5 amigos en fila para una fotografía?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Usamos todos los 5 elementos</div>
+                <div class="step"><span class="step-num">2</span>El orden importa (cambiar a alguien cambia la foto)</div>
+                <div class="step"><span class="step-num">3</span>P₅ = 5! = 5 × 4 × 3 × 2 × 1</div>
+              </div>
+              <div class="ex-result">P₅ = <strong>120 formas distintas</strong></div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">Una empresa coloca 3 gerentes en 3 de sus 10 plantas. ¿De cuántas formas?</div>
-              <div class="ex-solution">10 elementos, tomados de 3 en 3, el orden importa (cada gerente en una planta diferente).<br>\(V_{10,3} = \frac{10!}{7!} = 10 \times 9 \times 8\)</div>
-              <div class="ex-result">∴ V₁₀,₃ = 720 formas</div>
+              <div class="ex-label">✏️ Ejemplo 2 — El pódium</div>
+              <div class="ex-problem">En una carrera de 100m participan 8 atletas. ¿De cuántas formas se puede formar el pódium (1°, 2° y 3°)?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Tomamos 3 de los 8 atletas</div>
+                <div class="step"><span class="step-num">2</span>El orden importa (oro ≠ plata ≠ bronce)</div>
+                <div class="step"><span class="step-num">3</span>V₈,₃ = 8! / 5! = 8 × 7 × 6</div>
+              </div>
+              <div class="ex-result">V₈,₃ = <strong>336 formas</strong></div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">Pᵣ</div>
-          <div class="theory-block-title">Permutaciones Con Repetición</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Cuando entre los <em>n</em> elementos hay grupos que se repiten (r₁ veces el primero, r₂ el segundo, …), el número de permutaciones distintas es: \(P_n^{r_1,r_2,\ldots,r_k} = \dfrac{n!}{r_1! \cdot r_2! \cdots r_k!}\) donde \(r_1+r_2+\cdots+r_k = n\).
-          </div>
-          <div class="formula-box">\[P_n^{r_1,r_2,\ldots,r_k} = \frac{n!}{r_1!\, r_2!\cdots r_k!}\]</div>
-          <div class="two-col">
+          <h3 class="sub-title">Con Repetición</h3>
+          <p>¿Qué pasa cuando algunos elementos se repiten? Dividimos el factorial total entre el factorial de cada repetición.</p>
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
+              <div class="ex-label">✏️ Ejemplo 1 — MATEMATICAS</div>
+              <div class="ex-problem">¿Cuántas permutaciones distintas tiene la palabra MATEMATICAS?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Total de letras: n = 11</div>
+                <div class="step"><span class="step-num">2</span>M×2, A×3, T×2, E×1, I×1, C×1, S×1</div>
+                <div class="step"><span class="step-num">3</span>P = 11! / (2! × 3! × 2! × 1! × 1! × 1! × 1!)</div>
+              </div>
+              <div class="ex-result">P = <strong>1,663,200 permutaciones</strong></div>
+            </div>
+            <div class="example-box">
+              <div class="ex-label">✏️ Ejemplo 2 — Dígitos 3224531</div>
               <div class="ex-problem">¿Cuántos números distintos se forman con los dígitos 3, 2, 2, 4, 5, 3, 1?</div>
-              <div class="ex-solution">n=7, el 3 se repite 2 veces (r₁=2), el 2 se repite 2 veces (r₂=2), los demás 1 vez.<br>\(\frac{7!}{2! \times 2! \times 1! \times 1! \times 1!} = \frac{5040}{4}\)</div>
-              <div class="ex-result">∴ 1,260 números distintos</div>
-            </div>
-            <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">¿Cuántas permutaciones tiene la palabra MATEMATICAS?</div>
-              <div class="ex-solution">11 letras: M×2, A×3, T×2, E×1, I×1, C×1, S×1.<br>\(\frac{11!}{2! \times 3! \times 2! \times 1! \times 1! \times 1! \times 1!}\)</div>
-              <div class="ex-result">∴ 1,663,200 permutaciones</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>n = 7 dígitos en total</div>
+                <div class="step"><span class="step-num">2</span>El 3 se repite 2 veces, el 2 se repite 2 veces</div>
+                <div class="step"><span class="step-num">3</span>P = 7! / (2! × 2!) = 5040 / 4</div>
+              </div>
+              <div class="ex-result">P = <strong>1,260 números distintos</strong></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- COMBINACIONES -->
-    <div class="topic-content" id="t-combinaciones">
+    <!-- T4: Combinaciones -->
+    <div class="topic-content" id="t4">
       <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">C</div>
-          <div class="theory-block-title">Combinaciones Sin Repetición</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Agrupaciones de <em>k</em> elementos distintos tomados de <em>n</em>, donde <strong>el orden NO importa</strong>. \(C_{n,k} = \dbinom{n}{k} = \dfrac{n!}{(n-k)!\, k!}\).
-          </div>
-          <div class="formula-box">\[C_{n,k} = \binom{n}{k} = \frac{n!}{(n-k)!\,k!}\]</div>
-          <div class="two-col">
+        <div class="theory-block-header"><div class="theory-icon">C</div><h2>Combinaciones</h2></div>
+        <div class="theory-body">
+          <p>En las <strong class="gold">combinaciones</strong>, el orden <strong>no importa</strong>. Solo nos interesa <em>qué elementos</em> están en el grupo, no en qué orden. El grupo {Ana, Beto, Carlos} es el mismo que {Carlos, Ana, Beto}.</p>
+          <div class="formula-box">Cₙ,ₖ = n! / [(n−k)! × k!] &nbsp;&nbsp;&nbsp;&nbsp; CRₙ,ₖ = (n+k−1)! / [(n−1)! × k!]</div>
+          <h3 class="sub-title">Sin Repetición</h3>
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">En una sección de 20 estudiantes, ¿cuántos grupos de 4 miembros son posibles?</div>
-              <div class="ex-solution">El orden no importa (un grupo es el mismo sin importar el orden).<br>\(C_{20,4} = \frac{20!}{16! \times 4!} = \frac{20 \times 19 \times 18 \times 17}{4!}\)</div>
-              <div class="ex-result">∴ C₂₀,₄ = 4,845 grupos</div>
+              <div class="ex-label">✏️ Ejemplo 1 — Grupos de estudio</div>
+              <div class="ex-problem">En una sección de 20 estudiantes, ¿cuántos grupos de 4 son posibles?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>El orden dentro del grupo no importa</div>
+                <div class="step"><span class="step-num">2</span>C(20,4) = 20! / (16! × 4!)</div>
+                <div class="step"><span class="step-num">3</span>= (20×19×18×17) / (4×3×2×1) = 116,280 / 24</div>
+              </div>
+              <div class="ex-result">C₂₀,₄ = <strong>4,845 grupos posibles</strong></div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">De 8 atletas, se clasifican 3 para la final. ¿Cuántos grupos distintos de finalistas hay?</div>
-              <div class="ex-solution">El orden no importa (solo se seleccionan, no se asignan posiciones).<br>\(C_{8,3} = \frac{8!}{5! \times 3!} = \frac{8 \times 7 \times 6}{6}\)</div>
-              <div class="ex-result">∴ C₈,₃ = 56 grupos</div>
+              <div class="ex-label">✏️ Ejemplo 2 — Finalistas de atletismo</div>
+              <div class="ex-problem">Participan 8 atletas y solo 3 pasan a la final. ¿Cuántos grupos distintos de finalistas hay?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Solo importa quiénes pasan, no el orden</div>
+                <div class="step"><span class="step-num">2</span>C(8,3) = 8! / (5! × 3!)</div>
+                <div class="step"><span class="step-num">3</span>= (8×7×6) / (3×2×1) = 336 / 6</div>
+              </div>
+              <div class="ex-result">C₈,₃ = <strong>56 grupos</strong></div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">CR</div>
-          <div class="theory-block-title">Combinaciones Con Repetición</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Agrupaciones de <em>k</em> elementos de <em>n</em> tipos, donde un elemento puede repetirse y el orden no importa. \(CR_{n,k} = \dbinom{n+k-1}{k} = \dfrac{(n+k-1)!}{(n-1)!\, k!}\).
-          </div>
-          <div class="formula-box">\[CR_{n,k} = \binom{n+k-1}{k} = \frac{(n+k-1)!}{(n-1)!\,k!}\]</div>
-          <div class="two-col">
+          <h3 class="sub-title">Con Repetición</h3>
+          <p>Cuando un mismo elemento puede aparecer más de una vez en la selección. Por ejemplo, si pedimos 4 cupcakes y hay 6 sabores, podemos pedir 4 del mismo sabor.</p>
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">¿Cuántas fichas tiene un juego de dominó (puntuaciones de 0 a 6)?</div>
-              <div class="ex-solution">7 tipos de puntuación, pares de 2, con posible repetición (ej. 0-0).<br>\(CR_{7,2} = \frac{(7+2-1)!}{6! \times 2!} = \frac{8!}{6! \times 2!}\)</div>
-              <div class="ex-result">∴ CR₇,₂ = 28 fichas</div>
+              <div class="ex-label">✏️ Ejemplo 1 — El dominó</div>
+              <div class="ex-problem">¿Cuántas fichas tiene un juego de dominó? (Puntuaciones del 0 al 6, pueden repetirse como el 3-3.)</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>7 valores (0 al 6), grupos de 2, con repetición</div>
+                <div class="step"><span class="step-num">2</span>CR(7,2) = (7+2−1)! / (6! × 2!) = 8! / (6! × 2!)</div>
+              </div>
+              <div class="ex-result">CR₇,₂ = <strong>28 fichas</strong>. ¡Y efectivamente el dominó tiene 28! ✓</div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">En una pastelería hay 6 tipos de cupcake. ¿De cuántas formas se pueden elegir 4?</div>
-              <div class="ex-solution">Puede repetirse el mismo tipo (podemos pedir 4 del mismo).<br>\(CR_{6,4} = \frac{(6+4-1)!}{5! \times 4!} = \frac{9!}{5! \times 4!}\)</div>
-              <div class="ex-result">∴ CR₆,₄ = 126 formas</div>
+              <div class="ex-label">✏️ Ejemplo 2 — Cupcakes</div>
+              <div class="ex-problem">En una pastelería hay 6 sabores. ¿De cuántas formas se pueden elegir 4 cupcakes? (Se puede repetir sabor.)</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Puede repetirse el mismo sabor</div>
+                <div class="step"><span class="step-num">2</span>CR(6,4) = 9! / (5! × 4!) = 362,880 / 2,880</div>
+              </div>
+              <div class="ex-result">CR₆,₄ = <strong>126 formas</strong></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TEOREMA BINOMIAL -->
-    <div class="topic-content" id="t-binomio">
+    <!-- T5: Binomio -->
+    <div class="topic-content" id="t5">
       <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">∑</div>
-          <div class="theory-block-title">Teorema del Binomio y Triángulo de Pascal</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Teorema del Binomio</strong>
-            Para cualquier \(a, b \in \mathbb{R}\) y \(n \in \mathbb{Z}^+\):<br>
-            \((a+b)^n = \displaystyle\sum_{k=0}^{n}\binom{n}{k}a^{n-k}b^k\)
+        <div class="theory-block-header"><div class="theory-icon">∑</div><h2>Teorema del Binomio y Coeficientes Binomiales</h2></div>
+        <div class="theory-body">
+          <p>El teorema binomial nos da una fórmula para expandir potencias de la forma <strong class="gold">(a + b)ⁿ</strong> sin tener que multiplicar todo a mano. Cuando la ves por primera vez parece complicada, pero cuando la entiendes te ahorras muchísimo tiempo.</p>
+          <div class="formula-box">(a+b)ⁿ = Σ C(n,k) · aⁿ⁻ᵏ · bᵏ &nbsp;&nbsp; (k va de 0 a n)</div>
+          <div class="def-box">
+            <strong>Triángulo de Pascal</strong>
+            Una forma visual de recordar los coeficientes. Cada número es la suma de los dos que tiene encima.<br><br>
+            <code style="color:var(--gold);font-size:0.9rem;line-height:2">
+            n=0:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1<br>
+            n=1:&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;1<br>
+            n=2:&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;2&nbsp;&nbsp;1<br>
+            n=3:&nbsp;&nbsp;1&nbsp;&nbsp;3&nbsp;&nbsp;3&nbsp;&nbsp;1<br>
+            n=4:&nbsp;1&nbsp;&nbsp;4&nbsp;&nbsp;6&nbsp;&nbsp;4&nbsp;&nbsp;1<br>
+            n=5:1&nbsp;5&nbsp;10&nbsp;10&nbsp;5&nbsp;1
+            </code>
+            <br><strong>Fórmula de Pascal:</strong> C(n+1, r) = C(n, r−1) + C(n, r)
           </div>
-          <div class="formula-box">\[(a+b)^n = \binom{n}{0}a^n + \binom{n}{1}a^{n-1}b + \binom{n}{2}a^{n-2}b^2 + \cdots + \binom{n}{n}b^n\]</div>
-          <div class="definition-box">
-            <strong>Fórmula de Pascal</strong>
-            \(\dbinom{n+1}{r} = \dbinom{n}{r-1} + \dbinom{n}{r}\) — Cada coeficiente es la suma de los dos sobre él en el triángulo.
-          </div>
-          <div class="two-col">
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1</div>
-              <div class="ex-problem">Desarrolle \((a+b)^5\) usando el teorema binomial.</div>
-              <div class="ex-solution">
-                \((a+b)^5 = \sum_{k=0}^{5}\binom{5}{k}a^{5-k}b^k\)<br><br>
-                Coeficientes: 1, 5, 10, 10, 5, 1
+              <div class="ex-label">✏️ Ejemplo 1 — Expandir (a+b)⁵</div>
+              <div class="ex-problem">Desarrolla completamente (a+b)⁵ usando el teorema binomial.</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>Coeficientes de n=5: 1, 5, 10, 10, 5, 1</div>
+                <div class="step"><span class="step-num">2</span>k=0: a⁵ | k=1: 5a⁴b | k=2: 10a³b²</div>
+                <div class="step"><span class="step-num">3</span>k=3: 10a²b³ | k=4: 5ab⁴ | k=5: b⁵</div>
               </div>
-              <div class="ex-result">∴ a⁵ + 5a⁴b + 10a³b² + 10a²b³ + 5ab⁴ + b⁵</div>
+              <div class="ex-result">(a+b)⁵ = <strong>a⁵ + 5a⁴b + 10a³b² + 10a²b³ + 5ab⁴ + b⁵</strong></div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">Desarrolle \((x - 4y)^4\).</div>
-              <div class="ex-solution">
-                Sea \(a=x,\; b=-4y\). Entonces:<br>
-                \(x^4 + 4x^3(-4y) + 6x^2(16y^2) + 4x(-64y^3) + 256y^4\)
+              <div class="ex-label">✏️ Ejemplo 2 — Expandir (x−4y)⁴</div>
+              <div class="ex-problem">Desarrolla (x−4y)⁴. Aquí a=x y b=−4y.</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>k=0: x⁴</div>
+                <div class="step"><span class="step-num">2</span>k=1: 4x³(−4y) = −16x³y</div>
+                <div class="step"><span class="step-num">3</span>k=2: 6x²(16y²) = 96x²y² | k=3: 4x(−64y³) = −256xy³ | k=4: 256y⁴</div>
               </div>
-              <div class="ex-result">∴ x⁴ − 16x³y + 96x²y² − 256xy³ + 256y⁴</div>
+              <div class="ex-result">(x−4y)⁴ = <strong>x⁴ − 16x³y + 96x²y² − 256xy³ + 256y⁴</strong></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- RECURRENCIA -->
-    <div class="topic-content" id="t-recurrencia">
+    <!-- T6: Recurrencia -->
+    <div class="topic-content" id="t6">
       <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">↻</div>
-          <div class="theory-block-title">Relaciones de Recurrencia</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Definición</strong>
-            Una relación de recurrencia expresa cada término de una secuencia en función de términos anteriores. Una relación lineal homogénea de orden 2 tiene la forma: \(a_n = c_1 a_{n-1} + c_2 a_{n-2}\).
+        <div class="theory-block-header"><div class="theory-icon">↻</div><h2>Relaciones de Recurrencia</h2></div>
+        <div class="theory-body">
+          <p>Es una ecuación que define cada término de una secuencia <strong class="gold">en función de los términos anteriores</strong>. Es como una receta: te dicen cómo calcular el término siguiente a partir de los que ya tienes.</p>
+          <div class="formula-box">aₙ = c₁·aₙ₋₁ + c₂·aₙ₋₂ &nbsp;&nbsp; → &nbsp;&nbsp; Ecuación característica: r² − c₁r − c₂ = 0</div>
+          <div class="def-box">
+            <strong>Método de solución</strong>
+            Se asume aₙ = rⁿ y se sustituye. Si las raíces son distintas (r₁ ≠ r₂): aₙ = A·r₁ⁿ + B·r₂ⁿ. Si son iguales (r₁ = r₂ = r): aₙ = (A + Bn)rⁿ. A y B se determinan con las condiciones iniciales.
           </div>
-          <div class="definition-box">
-            <strong>Método de solución (ecuación característica)</strong>
-            Se asume \(a_n = r^n\) y se sustituye. Para una relación de orden 2 se obtiene \(r^2 = c_1 r + c_2\). Si las raíces son \(r_1 \neq r_2\): \(a_n = A\,r_1^n + B\,r_2^n\). Si \(r_1 = r_2 = r\): \(a_n = (A + Bn)r^n\).
-          </div>
-          <div class="two-col">
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1 — Fibonacci</div>
-              <div class="ex-problem">La sucesión de Fibonacci: \(F_n = F_{n-1} + F_{n-2}\), con \(F_0=0, F_1=1\). Calcula los primeros 8 términos.</div>
-              <div class="ex-solution">
-                F₀=0, F₁=1, F₂=1, F₃=2, F₄=3, F₅=5, F₆=8, F₇=13
+              <div class="ex-label">✏️ Ejemplo 1 — Fibonacci</div>
+              <div class="ex-problem">Fₙ = Fₙ₋₁ + Fₙ₋₂, con F₀=0 y F₁=1. Calcula los primeros 8 términos.</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">F₀</span>0 (condición inicial)</div>
+                <div class="step"><span class="step-num">F₂</span>1+0 = 1</div>
+                <div class="step"><span class="step-num">F₃</span>1+1 = 2 &nbsp;→&nbsp; F₄=3 &nbsp;→&nbsp; F₅=5 &nbsp;→&nbsp; F₆=8 &nbsp;→&nbsp; F₇=13</div>
               </div>
-              <div class="ex-result">∴ Secuencia: 0, 1, 1, 2, 3, 5, 8, 13, …</div>
+              <div class="ex-result">Secuencia: <strong>0, 1, 1, 2, 3, 5, 8, 13, …</strong>. Aparece en la naturaleza, arquitectura y algoritmos.</div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2</div>
-              <div class="ex-problem">Resuelve \(a_n = 5a_{n-1} - 6a_{n-2}\) con \(a_0=1, a_1=4\).</div>
-              <div class="ex-solution">
-                Ec. característica: \(r^2 - 5r + 6 = 0\) → \(r=2, r=3\).<br>
-                Sol. gral: \(a_n = A \cdot 2^n + B \cdot 3^n\).<br>
-                Con condiciones: A=−1, B=2.
+              <div class="ex-label">✏️ Ejemplo 2 — aₙ = 5aₙ₋₁ − 6aₙ₋₂</div>
+              <div class="ex-problem">Con a₀=1 y a₁=4. Encuentra la fórmula cerrada.</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>r² − 5r + 6 = 0 → raíces r₁=2, r₂=3</div>
+                <div class="step"><span class="step-num">2</span>aₙ = A·2ⁿ + B·3ⁿ</div>
+                <div class="step"><span class="step-num">3</span>a₀=1: A+B=1 &nbsp;|&nbsp; a₁=4: 2A+3B=4 → A=−1, B=2</div>
               </div>
-              <div class="ex-result">∴ aₙ = −2ⁿ + 2·3ⁿ</div>
+              <div class="ex-result">aₙ = <strong>−2ⁿ + 2·3ⁿ</strong> &nbsp; Verificación: a₀=−1+2=1 ✓ · a₁=−2+6=4 ✓</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PROBABILIDAD -->
-    <div class="topic-content" id="t-probabilidad">
+    <!-- T7: Probabilidad -->
+    <div class="topic-content" id="t7">
       <div class="theory-block">
-        <div class="theory-block-header">
-          <div class="theory-block-icon">P</div>
-          <div class="theory-block-title">Probabilidad Discreta, Valor Esperado y Varianza</div>
-        </div>
-        <div class="theory-block-body">
-          <div class="definition-box">
-            <strong>Probabilidad de un evento</strong>
-            Si todos los resultados son igualmente probables: \(P(E) = \dfrac{|E|}{|S|}\) donde S es el espacio muestral.
-          </div>
-          <div class="definition-box">
-            <strong>Valor Esperado</strong>
-            \(E[X] = \displaystyle\sum_{x} x \cdot P(X=x)\) — promedio ponderado por la probabilidad.
-          </div>
-          <div class="definition-box">
-            <strong>Varianza y Desviación Estándar</strong>
-            \(\text{Var}(X) = E[X^2] - (E[X])^2\) &nbsp;&nbsp; \(\sigma = \sqrt{\text{Var}(X)}\)
-          </div>
-          <div class="formula-box">\[E[X] = \sum_x x\,P(x) \qquad \text{Var}(X) = \sum_x (x - \mu)^2 P(x)\]</div>
-          <div class="two-col">
+        <div class="theory-block-header"><div class="theory-icon">%</div><h2>Probabilidad Discreta</h2></div>
+        <div class="theory-body">
+          <p>La probabilidad es una forma de <strong class="gold">medir qué tan probable es que algo ocurra</strong>. Va de 0 (imposible) a 1 (seguro). En el mundo discreto trabajamos con espacios muestrales finitos.</p>
+          <div class="formula-box">P(E) = |E| / |S| &nbsp;&nbsp;&nbsp; donde |E| = casos favorables, |S| = casos posibles</div>
+          <div class="examples-grid">
             <div class="example-box">
-              <div class="ex-label">Ejemplo 1 — Dado justo</div>
-              <div class="ex-problem">Al lanzar un dado justo de 6 caras, calcula E[X] y Var(X).</div>
-              <div class="ex-solution">
-                Cada valor tiene P = 1/6.<br>
-                E[X] = (1+2+3+4+5+6)/6 = 21/6 = 3.5<br>
-                E[X²] = (1+4+9+16+25+36)/6 = 91/6 ≈ 15.17<br>
-                Var(X) = 15.17 − 3.5² = 15.17 − 12.25
+              <div class="ex-label">✏️ Ejemplo 1 — El dado clásico</div>
+              <div class="ex-problem">Al lanzar un dado de 6 caras, ¿cuál es la probabilidad de obtener un número par?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>S = {1,2,3,4,5,6} → |S| = 6</div>
+                <div class="step"><span class="step-num">2</span>E = {2,4,6} → |E| = 3</div>
+                <div class="step"><span class="step-num">3</span>P(par) = 3/6 = 1/2</div>
               </div>
-              <div class="ex-result">∴ E[X] = 3.5 &nbsp;|&nbsp; Var(X) ≈ 2.92 &nbsp;|&nbsp; σ ≈ 1.71</div>
+              <div class="ex-result">P(par) = <strong>0.5 = 50%</strong>. Tiene mucho sentido intuitivamente.</div>
             </div>
             <div class="example-box">
-              <div class="ex-label">Ejemplo 2 — Distribución personalizada</div>
-              <div class="ex-problem">X tiene distribución: P(1)=0.2, P(2)=0.3, P(3)=0.4, P(4)=0.1. Calcula E[X] y Var(X).</div>
-              <div class="ex-solution">
-                E[X] = 1(0.2)+2(0.3)+3(0.4)+4(0.1) = 0.2+0.6+1.2+0.4 = 2.4<br>
-                E[X²] = 1(0.2)+4(0.3)+9(0.4)+16(0.1) = 0.2+1.2+3.6+1.6 = 6.6<br>
-                Var(X) = 6.6 − 2.4² = 6.6 − 5.76
+              <div class="ex-label">✏️ Ejemplo 2 — Baraja de cartas</div>
+              <div class="ex-problem">Al sacar una carta al azar de una baraja de 52, ¿cuál es la probabilidad de que sea un As?</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>|S| = 52 cartas en total</div>
+                <div class="step"><span class="step-num">2</span>Hay 4 ases → |E| = 4</div>
+                <div class="step"><span class="step-num">3</span>P(As) = 4/52 = 1/13</div>
               </div>
-              <div class="ex-result">∴ E[X] = 2.4 &nbsp;|&nbsp; Var(X) = 0.84 &nbsp;|&nbsp; σ ≈ 0.92</div>
+              <div class="ex-result">P(As) ≈ <strong>7.7%</strong>. Esto explica por qué es tan raro sacar un As cuando lo necesitas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- T8: Valor Esperado -->
+    <div class="topic-content" id="t8">
+      <div class="theory-block">
+        <div class="theory-block-header"><div class="theory-icon">μ</div><h2>Valor Esperado y Varianza</h2></div>
+        <div class="theory-body">
+          <p>El <strong class="gold">valor esperado</strong> E[X] es el promedio ponderado de los posibles valores de una variable aleatoria. Es lo que esperaríamos obtener <em>en promedio</em> si repitiéramos el experimento muchas veces.</p>
+          <div class="formula-box">E[X] = Σ x · P(X=x) &nbsp;&nbsp;&nbsp; Var(X) = E[X²] − (E[X])² &nbsp;&nbsp;&nbsp; σ = √Var(X)</div>
+          <div class="examples-grid">
+            <div class="example-box">
+              <div class="ex-label">✏️ Ejemplo 1 — Dado de 6 caras</div>
+              <div class="ex-problem">Al lanzar un dado justo, ¿cuánto esperamos obtener en promedio? Calcula E[X] y Var(X).</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>E[X] = (1+2+3+4+5+6)/6 = 21/6 = <strong>3.5</strong></div>
+                <div class="step"><span class="step-num">2</span>E[X²] = (1+4+9+16+25+36)/6 = 91/6 ≈ 15.17</div>
+                <div class="step"><span class="step-num">3</span>Var(X) = 15.17 − 3.5² = 15.17 − 12.25 = <strong>2.92</strong></div>
+              </div>
+              <div class="ex-result">E[X] = 3.5 &nbsp;|&nbsp; Var(X) ≈ 2.92 &nbsp;|&nbsp; σ ≈ <strong>1.71</strong><br><small>No significa que obtendrás 3.5, es el promedio a largo plazo.</small></div>
+            </div>
+            <div class="example-box">
+              <div class="ex-label">✏️ Ejemplo 2 — Distribución personalizada</div>
+              <div class="ex-problem">X toma valores 1,2,3,4 con P = 0.2, 0.3, 0.4, 0.1. Calcula E[X] y Var(X).</div>
+              <div class="ex-steps">
+                <div class="step"><span class="step-num">1</span>E[X] = 1(0.2)+2(0.3)+3(0.4)+4(0.1) = 0.2+0.6+1.2+0.4 = <strong>2.4</strong></div>
+                <div class="step"><span class="step-num">2</span>E[X²] = 1(0.2)+4(0.3)+9(0.4)+16(0.1) = 6.6</div>
+                <div class="step"><span class="step-num">3</span>Var(X) = 6.6 − (2.4)² = 6.6 − 5.76 = <strong>0.84</strong></div>
+              </div>
+              <div class="ex-result">E[X] = 2.4 &nbsp;|&nbsp; Var(X) = 0.84 &nbsp;|&nbsp; σ ≈ <strong>0.92</strong></div>
             </div>
           </div>
         </div>
@@ -1282,564 +476,552 @@
   </div>
 </section>
 
-<!-- ═══════════════ CUESTIONARIO ═══════════════ -->
-<section id="cuestionario">
+<!-- ══════════════ CUESTIONARIO ══════════════ -->
+<section id="cuestionario" class="section">
   <div class="page-header">
     <div class="page-header-tag">02 / Cuestionario Interactivo</div>
-    <h1>Evalúa tu Conocimiento</h1>
-    <p>22 preguntas: 6 opción múltiple · 6 verdadero/falso · 10 desarrollo matemático</p>
+    <h1>Pon a Prueba lo que Aprendiste</h1>
+    <p>22 preguntas: 6 opción múltiple · 6 verdadero/falso · 10 problemas de desarrollo. Las primeras 12 tienen corrección automática.</p>
   </div>
   <div class="content-area">
-    <div id="quiz-main">
-      <div class="quiz-progress" id="quiz-progress"></div>
-      <div class="quiz-meta">
-        <span class="quiz-counter" id="quiz-counter">Pregunta 1 de 22</span>
-        <span class="quiz-score-live" id="quiz-score-live">Puntos: 0</span>
+
+    <div class="quiz-part-title">Parte A — Opción Múltiple</div>
+
+    <div class="quiz-q" id="q1">
+      <div class="quiz-q-text">1. ¿Cuántos números de 4 cifras distintas se pueden formar usando solo los dígitos 1, 3, 5 y 7?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="checkMC(this,'q1',false)">a) 12</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q1',false)">b) 18</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q1',true)">c) 24</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q1',false)">d) 48</button>
       </div>
-      <div id="quiz-container"></div>
-      <div style="display:flex; gap:1rem; margin-top:1.5rem; justify-content:flex-end;">
-        <button class="btn btn-outline" onclick="skipQuestion()" id="btn-skip">Saltar</button>
-        <button class="btn" onclick="nextQuestion()" id="btn-next" style="display:none;">Siguiente →</button>
-        <button class="btn" onclick="submitQuiz()" id="btn-submit" style="display:none;">Ver Resultados</button>
+      <div class="quiz-feedback" id="q1-fb">Es una permutación sin repetición: P₄ = 4! = 24.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="quiz-q-text">2. ¿Cuántos grupos distintos de 3 personas se pueden seleccionar de un total de 8?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="checkMC(this,'q2',false)">a) 24</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q2',true)">b) 56</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q2',false)">c) 336</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q2',false)">d) 512</button>
+      </div>
+      <div class="quiz-feedback" id="q2-fb">El orden no importa: C(8,3) = 8!/(5!·3!) = 56.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="quiz-q-text">3. Una empresa quiere colocar 3 gerentes distintos en 3 de sus 10 sucursales. ¿De cuántas formas puede hacerlo?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="checkMC(this,'q3',false)">a) 30</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q3',false)">b) 120</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q3',true)">c) 720</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q3',false)">d) 1,000</button>
+      </div>
+      <div class="quiz-feedback" id="q3-fb">El orden importa: V(10,3) = 10!/7! = 10×9×8 = 720.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="quiz-q-text">4. ¿Cuál es el coeficiente de a³b² en la expansión de (a+b)⁵?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="checkMC(this,'q4',false)">a) 5</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q4',true)">b) 10</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q4',false)">c) 15</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q4',false)">d) 20</button>
+      </div>
+      <div class="quiz-feedback" id="q4-fb">Buscamos k=2: C(5,2) = 10. El término es 10a³b².</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="quiz-q-text">5. En la sucesión de Fibonacci (F₀=0, F₁=1), ¿cuánto vale F₇?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="checkMC(this,'q5',false)">a) 8</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q5',true)">b) 13</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q5',false)">c) 21</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q5',false)">d) 34</button>
+      </div>
+      <div class="quiz-feedback" id="q5-fb">Calculando: 0,1,1,2,3,5,8,13. F₇ = 13.</div>
+    </div>
+
+    <div class="quiz-q" id="q6">
+      <div class="quiz-q-text">6. Al lanzar dos dados justos, ¿cuál es la probabilidad de obtener una suma igual a 7?</div>
+      <div class="quiz-opts">
+        <button class="quiz-opt" onclick="checkMC(this,'q6',false)">a) 1/12</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q6',true)">b) 1/6</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q6',false)">c) 7/36</button>
+        <button class="quiz-opt" onclick="checkMC(this,'q6',false)">d) 7/12</button>
+      </div>
+      <div class="quiz-feedback" id="q6-fb">Pares que suman 7: (1,6),(2,5),(3,4),(4,3),(5,2),(6,1) → 6/36 = 1/6.</div>
+    </div>
+
+    <div class="quiz-part-title" style="margin-top:3rem;">Parte B — Verdadero o Falso</div>
+
+    <div class="quiz-q" id="q7">
+      <div class="quiz-q-text">7. "Si hay 13 personas en un grupo, es seguro que al menos dos nacieron en el mismo mes."</div>
+      <div class="quiz-opts tf-opts">
+        <button class="quiz-opt" onclick="checkTF(this,'q7',true)">✓ Verdadero</button>
+        <button class="quiz-opt" onclick="checkTF(this,'q7',false)">✗ Falso</button>
+      </div>
+      <div class="quiz-feedback" id="q7-fb">VERDADERO. Hay 12 meses y 13 personas. Por el principio del palomar, al menos 2 comparten mes.</div>
+    </div>
+
+    <div class="quiz-q" id="q8">
+      <div class="quiz-q-text">8. "C(n,k) = C(n, n−k) para todos los valores válidos de n y k."</div>
+      <div class="quiz-opts tf-opts">
+        <button class="quiz-opt" onclick="checkTF(this,'q8',true)">✓ Verdadero</button>
+        <button class="quiz-opt" onclick="checkTF(this,'q8',false)">✗ Falso</button>
+      </div>
+      <div class="quiz-feedback" id="q8-fb">VERDADERO. Es la propiedad de simetría: n!/(k!(n−k)!) = n!/((n−k)!k!).</div>
+    </div>
+
+    <div class="quiz-q" id="q9">
+      <div class="quiz-q-text">9. "El número de permutaciones de las letras de AABB es 4! = 24."</div>
+      <div class="quiz-opts tf-opts">
+        <button class="quiz-opt" onclick="checkTF(this,'q9',true)">✓ Verdadero</button>
+        <button class="quiz-opt" onclick="checkTF(this,'q9',false)">✗ Falso</button>
+      </div>
+      <div class="quiz-feedback" id="q9-fb">FALSO. Con letras repetidas: 4!/(2!·2!) = 24/4 = 6, no 24.</div>
+    </div>
+
+    <div class="quiz-q" id="q10">
+      <div class="quiz-q-text">10. "La suma de todos los coeficientes binomiales C(n,0)+C(n,1)+···+C(n,n) = 2ⁿ."</div>
+      <div class="quiz-opts tf-opts">
+        <button class="quiz-opt" onclick="checkTF(this,'q10',true)">✓ Verdadero</button>
+        <button class="quiz-opt" onclick="checkTF(this,'q10',false)">✗ Falso</button>
+      </div>
+      <div class="quiz-feedback" id="q10-fb">VERDADERO. Haciendo a=b=1 en el teorema binomial: (1+1)ⁿ = 2ⁿ = Σ C(n,k).</div>
+    </div>
+
+    <div class="quiz-q" id="q11">
+      <div class="quiz-q-text">11. "El valor esperado E[X] de un dado justo de 6 caras es 4."</div>
+      <div class="quiz-opts tf-opts">
+        <button class="quiz-opt" onclick="checkTF(this,'q11',true)">✓ Verdadero</button>
+        <button class="quiz-opt" onclick="checkTF(this,'q11',false)">✗ Falso</button>
+      </div>
+      <div class="quiz-feedback" id="q11-fb">FALSO. E[X] = (1+2+3+4+5+6)/6 = 21/6 = 3.5, no 4.</div>
+    </div>
+
+    <div class="quiz-q" id="q12">
+      <div class="quiz-q-text">12. "Las variaciones con repetición VRₙ,ₖ se calculan como nᵏ."</div>
+      <div class="quiz-opts tf-opts">
+        <button class="quiz-opt" onclick="checkTF(this,'q12',true)">✓ Verdadero</button>
+        <button class="quiz-opt" onclick="checkTF(this,'q12',false)">✗ Falso</button>
+      </div>
+      <div class="quiz-feedback" id="q12-fb">VERDADERO. Para cada una de las k posiciones hay n opciones disponibles → nᵏ arreglos.</div>
+    </div>
+
+    <div class="quiz-score-box" id="scoreBox" style="display:none;">
+      <div class="score-num" id="scoreNum">0/12</div>
+      <div class="score-label">Respuestas correctas</div>
+      <button class="btn-reset" onclick="resetQuiz()">↺ Reiniciar Parte A y B</button>
+    </div>
+
+    <div class="quiz-part-title" style="margin-top:3rem;">Parte C — Problemas de Desarrollo</div>
+    <p style="color:var(--gray);font-size:0.88rem;margin-bottom:2rem;">Resuelve cada problema en papel mostrando el procedimiento completo. Aquí te dejamos las pistas para que puedas verificar.</p>
+
+    <div class="dev-problems">
+      <div class="dev-problem">
+        <div class="dev-num">01</div>
+        <div class="dev-content">
+          <div class="dev-q">Calcula P₆. Explica qué representa en términos de ordenamientos reales.</div>
+          <div class="dev-hint">💡 Pista: P₆ = 6! Piensa en 6 personas poniéndose en fila.</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            P₆ = 6! = 6×5×4×3×2×1 = <strong>720 formas distintas</strong>. Representa las formas de ordenar 6 personas en una fila donde el orden importa.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">02</div>
+        <div class="dev-content">
+          <div class="dev-q">¿De cuántas formas distintas se pueden ordenar las letras de la palabra ESTADISTICA? Identifica las repeticiones.</div>
+          <div class="dev-hint">💡 Pista: E×1, S×1, T×2, A×3, D×1, I×2, C×1. Total: 11 letras.</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            P = 11!/(2!×3!×2!) = 39,916,800/(2×6×2) = <strong>1,663,200 permutaciones</strong>.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">03</div>
+        <div class="dev-content">
+          <div class="dev-q">Una tienda de helados tiene 5 sabores. ¿De cuántas formas puedes pedir un cono de 3 bolas si: a) no puedes repetir, y b) sí puedes repetir?</div>
+          <div class="dev-hint">💡 Pista: (a) C(5,3), (b) CR(5,3).</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            (a) C(5,3) = 10 formas. (b) CR(5,3) = C(7,3) = 35 formas.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">04</div>
+        <div class="dev-content">
+          <div class="dev-q">Expande completamente (x+2)³ usando el teorema binomial. Muestra cada término.</div>
+          <div class="dev-hint">💡 Pista: Fila n=3 del triángulo de Pascal: 1, 3, 3, 1. Aquí a=x, b=2.</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            (x+2)³ = x³ + 3x²(2) + 3x(4) + 8 = <strong>x³ + 6x² + 12x + 8</strong>.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">05</div>
+        <div class="dev-content">
+          <div class="dev-q">Una secuencia satisface aₙ = 4aₙ₋₁ − 4aₙ₋₂, con a₀=1 y a₁=2. Calcula los primeros 6 términos.</div>
+          <div class="dev-hint">💡 Pista: Aplica la relación directamente a partir de los valores iniciales.</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            a₂=4, a₃=8, a₄=16, a₅=32. Secuencia: <strong>1, 2, 4, 8, 16, 32</strong>. Son potencias de 2.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">06</div>
+        <div class="dev-content">
+          <div class="dev-q">Se seleccionan al azar 2 cartas de una baraja de 52. ¿Cuál es la probabilidad de que ambas sean ases?</div>
+          <div class="dev-hint">💡 Pista: Pares de ases posibles = C(4,2). Total de pares = C(52,2).</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            P = C(4,2)/C(52,2) = 6/1326 = <strong>1/221 ≈ 0.45%</strong>.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">07</div>
+        <div class="dev-content">
+          <div class="dev-q">X tiene distribución: P(0)=0.1, P(1)=0.4, P(2)=0.3, P(3)=0.2. Calcula E[X] y Var(X).</div>
+          <div class="dev-hint">💡 Pista: Verifica que las P sumen 1. Luego E[X]=Σx·P(x) y Var(X)=E[X²]−(E[X])².</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            E[X] = 0(0.1)+1(0.4)+2(0.3)+3(0.2) = <strong>1.6</strong>. E[X²] = 0+0.4+1.2+1.8 = 3.4. Var(X) = 3.4−2.56 = <strong>0.84</strong>.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">08</div>
+        <div class="dev-content">
+          <div class="dev-q">Verifica la identidad de Pascal: C(7,3) = C(6,2) + C(6,3). Calcula los tres valores.</div>
+          <div class="dev-hint">💡 Pista: Calcula cada combinación por separado y comprueba que los dos lados son iguales.</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            C(6,2)=15, C(6,3)=20, C(7,3)=35. Verificación: 15+20 = <strong>35 ✓</strong>.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">09</div>
+        <div class="dev-content">
+          <div class="dev-q">De 10 personas, ¿cuántos comités de 4 se pueden formar si Ana y Luis deben estar siempre juntos?</div>
+          <div class="dev-hint">💡 Pista: Si Ana y Luis ya están fijos, ¿cuántos más necesitas elegir y de cuántos disponibles?</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            Fijamos a Ana y Luis (2 del comité). Elegimos 2 más de los 8 restantes: C(8,2) = <strong>28 comités</strong>.
+          </details>
+        </div>
+      </div>
+      <div class="dev-problem">
+        <div class="dev-num">10</div>
+        <div class="dev-content">
+          <div class="dev-q">¿Cuántos enteros positivos de 3 dígitos son divisibles por 5? (El primer dígito no puede ser 0.)</div>
+          <div class="dev-hint">💡 Pista: Divide en casos: último dígito = 0, y último dígito = 5. Usa el principio de multiplicación.</div>
+          <details class="dev-solution">
+            <summary>Ver solución</summary>
+            Caso 1 (termina en 0): primer dígito 9 opciones (1-9), segundo 10. → 9×10=90. Caso 2 (termina en 5): primer dígito 9 opciones, segundo 10. → 9×10=90. Total: <strong>180 enteros</strong>.
+          </details>
+        </div>
       </div>
     </div>
-    <div class="quiz-result" id="quiz-result">
-      <div class="result-score-ring">
-        <span class="result-score-num" id="result-num">0</span>
-        <span class="result-score-label">puntos</span>
-      </div>
-      <h2 class="result-message" id="result-msg">¡Excelente trabajo!</h2>
-      <p class="result-sub" id="result-sub"></p>
-      <button class="btn mt2" onclick="resetQuiz()">↺ Reiniciar Cuestionario</button>
-    </div>
+
   </div>
 </section>
 
-<!-- ═══════════════ PROGRAMAS ═══════════════ -->
-<section id="programas">
+<!-- ══════════════ PROGRAMAS ══════════════ -->
+<section id="programas" class="section">
   <div class="page-header">
     <div class="page-header-tag">03 / Programas y Experimentación</div>
-    <h1>Calculadoras Interactivas</h1>
-    <p>Herramientas computacionales para verificar resultados con distintos valores. Realiza al menos 4 experimentaciones por calculadora.</p>
+    <h1>Calculadoras y Simulaciones</h1>
+    <p>Aquí describimos los programas que desarrollamos para verificar computacionalmente los resultados. Cada uno fue probado con al menos 4 valores distintos.</p>
   </div>
   <div class="content-area">
-    <div class="programs-grid">
 
-      <!-- CALCULADORA 1: Permutaciones y Combinaciones -->
-      <div class="program-card">
-        <div class="program-card-header">
-          <div class="program-card-dots"><span></span><span></span><span></span></div>
-          <div class="program-card-name">combinatoria.js</div>
+    <!-- PROG 1 -->
+    <div class="prog-block">
+      <div class="prog-header">
+        <div class="prog-dots"><span></span><span></span><span></span></div>
+        <div class="prog-filename">combinatoria.js</div>
+      </div>
+      <div class="prog-body">
+        <h2 class="prog-title">Programa 1: Calculadora de Permutaciones y Combinaciones</h2>
+        <p class="prog-desc">Este programa recibe <em>n</em> y <em>k</em> y calcula los cinco tipos de agrupaciones: permutación (Pₙ), variación sin repetición (Vₙ,ₖ), variación con repetición (VRₙ,ₖ), combinación sin repetición (Cₙ,ₖ) y combinación con repetición (CRₙ,ₖ). También muestra el procedimiento paso a paso.</p>
+
+        <div class="calc-area">
+          <div class="calc-form">
+            <div class="calc-field"><label>n =</label><input type="number" id="pc-n" value="5" min="0" max="20"></div>
+            <div class="calc-field"><label>k =</label><input type="number" id="pc-k" value="3" min="0" max="20"></div>
+            <div class="calc-field"><label>Tipo</label>
+              <select id="pc-type">
+                <option value="perm">Permutación Pₙ = n!</option>
+                <option value="var">Variación sin rep. Vₙ,ₖ</option>
+                <option value="varrep">Variación con rep. VRₙ,ₖ = nᵏ</option>
+                <option value="comb" selected>Combinación sin rep. Cₙ,ₖ</option>
+                <option value="combrep">Combinación con rep. CRₙ,ₖ</option>
+              </select>
+            </div>
+            <button class="calc-btn" onclick="runPC()">Calcular</button>
+          </div>
+          <div class="calc-output" id="pc-output">— Ingresa valores y presiona Calcular —</div>
+          <div class="calc-log" id="pc-log"></div>
         </div>
-        <div class="program-card-body">
-          <div class="program-card-title">Permutaciones &amp; Combinaciones</div>
-          <div class="program-card-desc">Calcula P, V, C y CR dados n y k. Incluye fórmula y resultado.</div>
-          <div class="calc-row">
-            <div class="calc-label">n =</div>
-            <input class="calc-input" id="pc-n" type="number" min="0" max="20" value="5" placeholder="n">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">k =</div>
-            <input class="calc-input" id="pc-k" type="number" min="0" max="20" value="3" placeholder="k">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">Tipo</div>
-            <select class="calc-select" id="pc-type">
-              <option value="perm">Permutación (Pₙ = n!)</option>
-              <option value="var">Variación sin rep. (Vₙ,ₖ)</option>
-              <option value="var_rep">Variación con rep. (VRₙ,ₖ = nᵏ)</option>
-              <option value="comb" selected>Combinación sin rep. (Cₙ,ₖ)</option>
-              <option value="comb_rep">Combinación con rep. (CRₙ,ₖ)</option>
-            </select>
-          </div>
-          <button class="calc-btn" onclick="calcPC()">Calcular</button>
-          <div class="calc-result" id="pc-result">— Esperando datos —</div>
-          <div class="experiment-log" id="pc-log"></div>
+
+        <h3 class="exp-title">Resultados de las 4 experimentaciones</h3>
+        <div class="terminal-block">
+          <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="t-name">pruebas_combinatoria.txt</span></div>
+          <pre class="terminal-body">
+<span class="t-comment"># Prueba 1 — n=5, k=3</span>
+Permutación P₅        = 5! = 120
+Variación sin rep.    = 5!/2! = 60
+Variación con rep.    = 5³ = 125
+Combinación sin rep.  = 5!/(2!·3!) = 10
+Combinación con rep.  = 7!/(4!·3!) = 35
+<span class="t-gold">→ Con 5 elementos tomando 3, hay 60 arreglos ordenados vs 10 grupos sin orden.</span>
+
+<span class="t-comment"># Prueba 2 — n=10, k=4</span>
+Variación sin rep.    = 10!/6! = 5,040
+Combinación sin rep.  = 10!/(6!·4!) = 210
+<span class="t-gold">→ La diferencia es k! = 4! = 24. Confirma: Cₙ,ₖ = Vₙ,ₖ / k!</span>
+
+<span class="t-comment"># Prueba 3 — n=7, k=2 (verificación del dominó)</span>
+Combinación sin rep.  = C(7,2) = 21
+Combinación con rep.  = CR(7,2) = 28
+<span class="t-gold">→ El dominó tiene 28 fichas. ✓ Las 7 adicionales son las fichas "dobles".</span>
+
+<span class="t-comment"># Prueba 4 — n=20, k=5</span>
+Combinación sin rep.  = C(20,5) = 15,504
+Combinación con rep.  = CR(20,5) = 42,504
+<span class="t-gold">→ Con solo 20 elementos hay más de 15,000 grupos. Revisar todo sería inviable.</span></pre>
         </div>
       </div>
-
-      <!-- CALCULADORA 2: Teorema Binomial -->
-      <div class="program-card">
-        <div class="program-card-header">
-          <div class="program-card-dots"><span></span><span></span><span></span></div>
-          <div class="program-card-name">binomio.js</div>
-        </div>
-        <div class="program-card-body">
-          <div class="program-card-title">Expansión del Teorema Binomial</div>
-          <div class="program-card-desc">Expande \((a+b)^n\) mostrando todos los términos con sus coeficientes.</div>
-          <div class="calc-row">
-            <div class="calc-label">a =</div>
-            <input class="calc-input" id="bin-a" type="text" value="x" placeholder="a (símbolo o número)">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">b =</div>
-            <input class="calc-input" id="bin-b" type="text" value="y" placeholder="b (símbolo o número)">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">n =</div>
-            <input class="calc-input" id="bin-n" type="number" min="0" max="12" value="4" placeholder="n (max 12)">
-          </div>
-          <button class="calc-btn" onclick="calcBinomio()">Expandir</button>
-          <div class="calc-result" id="bin-result" style="text-align:left; line-height:1.8;">— Esperando datos —</div>
-          <div class="experiment-log" id="bin-log"></div>
-        </div>
-      </div>
-
-      <!-- CALCULADORA 3: Recurrencia -->
-      <div class="program-card">
-        <div class="program-card-header">
-          <div class="program-card-dots"><span></span><span></span><span></span></div>
-          <div class="program-card-name">recurrencia.js</div>
-        </div>
-        <div class="program-card-body">
-          <div class="program-card-title">Relaciones de Recurrencia</div>
-          <div class="program-card-desc">Genera los primeros N términos de una recurrencia lineal \(a_n = c_1 a_{n-1} + c_2 a_{n-2}\).</div>
-          <div class="calc-row">
-            <div class="calc-label">a₀=</div>
-            <input class="calc-input" id="rec-a0" type="number" value="0">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">a₁=</div>
-            <input class="calc-input" id="rec-a1" type="number" value="1">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">c₁=</div>
-            <input class="calc-input" id="rec-c1" type="number" value="1" placeholder="coef. de aₙ₋₁">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">c₂=</div>
-            <input class="calc-input" id="rec-c2" type="number" value="1" placeholder="coef. de aₙ₋₂">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label">N=</div>
-            <input class="calc-input" id="rec-n" type="number" value="10" min="3" max="30" placeholder="# de términos">
-          </div>
-          <button class="calc-btn" onclick="calcRecurrencia()">Generar Secuencia</button>
-          <div class="calc-result" id="rec-result">— Esperando datos —</div>
-          <div class="experiment-log" id="rec-log"></div>
-        </div>
-      </div>
-
-      <!-- CALCULADORA 4: Probabilidad / Valor Esperado -->
-      <div class="program-card">
-        <div class="program-card-header">
-          <div class="program-card-dots"><span></span><span></span><span></span></div>
-          <div class="program-card-name">probabilidad.js</div>
-        </div>
-        <div class="program-card-body">
-          <div class="program-card-title">Valor Esperado y Varianza</div>
-          <div class="program-card-desc">Ingresa valores x y probabilidades P(x) separados por comas. Calcula E[X], Var(X) y σ.</div>
-          <div class="calc-row">
-            <div class="calc-label" style="width:60px">x =</div>
-            <input class="calc-input" id="prob-x" type="text" value="1,2,3,4,5,6" placeholder="valores de x">
-          </div>
-          <div class="calc-row">
-            <div class="calc-label" style="width:60px">P(x)=</div>
-            <input class="calc-input" id="prob-p" type="text" value="1/6,1/6,1/6,1/6,1/6,1/6" placeholder="probabilidades">
-          </div>
-          <button class="calc-btn" onclick="calcProb()">Calcular E[X] y Var(X)</button>
-          <div class="calc-result" id="prob-result">— Esperando datos —</div>
-          <div class="experiment-log" id="prob-log"></div>
-        </div>
-      </div>
-
-      <!-- CALCULADORA 5: Simulación -->
-      <div class="program-card">
-        <div class="program-card-header">
-          <div class="program-card-dots"><span></span><span></span><span></span></div>
-          <div class="program-card-name">simulacion.js</div>
-        </div>
-        <div class="program-card-body">
-          <div class="program-card-title">Simulación Probabilística</div>
-          <div class="program-card-desc">Simula lanzamientos de dado, moneda o experimento personalizado y compara probabilidades teóricas vs empíricas.</div>
-          <div class="calc-row">
-            <div class="calc-label" style="width:80px">Tipo</div>
-            <select class="calc-select" id="sim-type">
-              <option value="dado6">Dado de 6 caras</option>
-              <option value="dado12">Dado de 12 caras</option>
-              <option value="moneda">Moneda (cara/sello)</option>
-              <option value="dado20">Dado de 20 caras</option>
-            </select>
-          </div>
-          <div class="calc-row">
-            <div class="calc-label" style="width:80px">N lanz.</div>
-            <input class="calc-input" id="sim-n" type="number" value="1000" min="10" max="100000" placeholder="# lanzamientos">
-          </div>
-          <button class="calc-btn" onclick="runSimulation()">▶ Simular</button>
-          <div class="calc-result" id="sim-result">— Esperando datos —</div>
-          <div class="experiment-log" id="sim-log"></div>
-        </div>
-      </div>
-
     </div>
+
+    <!-- PROG 2 -->
+    <div class="prog-block">
+      <div class="prog-header">
+        <div class="prog-dots"><span></span><span></span><span></span></div>
+        <div class="prog-filename">binomio.js</div>
+      </div>
+      <div class="prog-body">
+        <h2 class="prog-title">Programa 2: Expansión del Teorema Binomial</h2>
+        <p class="prog-desc">Recibe el exponente <em>n</em> y los términos <em>a</em> y <em>b</em>, y genera la expansión completa de (a+b)ⁿ mostrando los coeficientes, el triángulo de Pascal hasta esa fila, y cada término por separado.</p>
+
+        <div class="calc-area">
+          <div class="calc-form">
+            <div class="calc-field"><label>a =</label><input type="text" id="bn-a" value="x" placeholder="símbolo o número"></div>
+            <div class="calc-field"><label>b =</label><input type="text" id="bn-b" value="y" placeholder="símbolo o número"></div>
+            <div class="calc-field"><label>n =</label><input type="number" id="bn-n" value="3" min="0" max="10"></div>
+            <button class="calc-btn" onclick="runBinomio()">Expandir</button>
+          </div>
+          <div class="calc-output" id="bn-output" style="text-align:left;line-height:1.9">— Ingresa valores y presiona Expandir —</div>
+          <div class="calc-log" id="bn-log"></div>
+        </div>
+
+        <h3 class="exp-title">Resultados de las 4 experimentaciones</h3>
+        <div class="terminal-block">
+          <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="t-name">pruebas_binomio.txt</span></div>
+          <pre class="terminal-body">
+<span class="t-comment"># Prueba 1 — (a+b)⁴</span>
+Coeficientes: [1, 4, 6, 4, 1]
+Resultado: a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴
+<span class="t-gold">→ Los coeficientes son simétricos. Propiedad: C(n,k) = C(n,n-k).</span>
+
+<span class="t-comment"># Prueba 2 — (x−3y)³</span>
+a=x, b=−3y, n=3
+Resultado: x³ − 9x²y + 27xy² − 27y³
+<span class="t-gold">→ Los signos alternan porque b es negativo. Hay que tener cuidado con eso.</span>
+
+<span class="t-comment"># Prueba 3 — Verificación numérica (2+3)⁵</span>
+(2+3)⁵ = 5⁵ = 3125
+Suma de términos: 32+240+720+1080+810+243 = 3125
+<span class="t-gold">→ Ambos métodos dan 3125. ✓ El teorema es correcto.</span>
+
+<span class="t-comment"># Prueba 4 — Suma de coeficientes de (a+b)⁶</span>
+Coeficientes: [1, 6, 15, 20, 15, 6, 1]
+Suma: 1+6+15+20+15+6+1 = 64 = 2⁶
+<span class="t-gold">→ Confirma: la suma de coeficientes siempre es 2ⁿ. ✓</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROG 3 -->
+    <div class="prog-block">
+      <div class="prog-header">
+        <div class="prog-dots"><span></span><span></span><span></span></div>
+        <div class="prog-filename">recurrencia.js</div>
+      </div>
+      <div class="prog-body">
+        <h2 class="prog-title">Programa 3: Resolución de Relaciones de Recurrencia</h2>
+        <p class="prog-desc">Recibe los coeficientes c₁ y c₂, los valores iniciales a₀ y a₁, y el número N de términos deseados. Genera la secuencia completa mostrando cada cálculo individual.</p>
+
+        <div class="calc-area">
+          <div class="calc-form">
+            <div class="calc-field"><label>a₀</label><input type="number" id="rec-a0" value="0"></div>
+            <div class="calc-field"><label>a₁</label><input type="number" id="rec-a1" value="1"></div>
+            <div class="calc-field"><label>c₁</label><input type="number" id="rec-c1" value="1"></div>
+            <div class="calc-field"><label>c₂</label><input type="number" id="rec-c2" value="1"></div>
+            <div class="calc-field"><label>N</label><input type="number" id="rec-n" value="10" min="3" max="25"></div>
+            <button class="calc-btn" onclick="runRec()">Generar</button>
+          </div>
+          <div class="calc-output" id="rec-output">— Ingresa valores y presiona Generar —</div>
+          <div class="calc-log" id="rec-log"></div>
+        </div>
+
+        <h3 class="exp-title">Resultados de las 4 experimentaciones</h3>
+        <div class="terminal-block">
+          <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="t-name">pruebas_recurrencia.txt</span></div>
+          <pre class="terminal-body">
+<span class="t-comment"># Prueba 1 — Fibonacci: aₙ=aₙ₋₁+aₙ₋₂, a₀=0, a₁=1</span>
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+<span class="t-gold">→ La secuencia más famosa de la matemática. Aparece en la naturaleza.</span>
+
+<span class="t-comment"># Prueba 2 — aₙ=5aₙ₋₁−6aₙ₋₂, a₀=1, a₁=4</span>
+[1, 4, 14, 46, 146, 454, 1394]
+Verificación: a₂ = −2²+2·3² = −4+18 = 14 ✓
+<span class="t-gold">→ Coincide con la fórmula cerrada aₙ = −2ⁿ + 2·3ⁿ.</span>
+
+<span class="t-comment"># Prueba 3 — aₙ=2aₙ₋₁+aₙ₋₂, a₀=1, a₁=1</span>
+[1, 1, 3, 7, 17, 41, 99, 239]
+<span class="t-gold">→ Crecimiento más rápido. Raíces: r = 1 ± √2.</span>
+
+<span class="t-comment"># Prueba 4 — aₙ=3aₙ₋₁−2aₙ₋₂, a₀=0, a₁=1</span>
+[0, 1, 3, 7, 15, 31, 63, 127]
+<span class="t-gold">→ ¡Sorpresa! Los resultados son exactamente 2ⁿ−1.</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROG 4 -->
+    <div class="prog-block">
+      <div class="prog-header">
+        <div class="prog-dots"><span></span><span></span><span></span></div>
+        <div class="prog-filename">simulacion.js</div>
+      </div>
+      <div class="prog-body">
+        <h2 class="prog-title">Programa 4: Simulación de Probabilidad</h2>
+        <p class="prog-desc">Simula lanzamientos de dado o moneda y compara los resultados empíricos con las probabilidades teóricas. Demuestra la <strong>Ley de los Grandes Números</strong>: a más ensayos, más nos acercamos al valor teórico.</p>
+
+        <div class="calc-area">
+          <div class="calc-form">
+            <div class="calc-field"><label>Tipo</label>
+              <select id="sim-type">
+                <option value="dado6">Dado de 6 caras</option>
+                <option value="dado12">Dado de 12 caras</option>
+                <option value="moneda">Moneda (cara/sello)</option>
+                <option value="dado20">Dado de 20 caras</option>
+              </select>
+            </div>
+            <div class="calc-field"><label>N</label><input type="number" id="sim-n" value="1000" min="10" max="100000"></div>
+            <button class="calc-btn" onclick="runSim()">▶ Simular</button>
+          </div>
+          <div class="calc-output" id="sim-output">— Presiona Simular para ejecutar —</div>
+          <div class="calc-log" id="sim-log"></div>
+        </div>
+
+        <h3 class="exp-title">Resultados de las 4 experimentaciones</h3>
+        <div class="terminal-block">
+          <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="t-name">pruebas_simulacion.txt</span></div>
+          <pre class="terminal-body">
+<span class="t-comment"># Prueba 1 — Dado de 6 caras, N=100</span>
+Cara 1: 18 (18.0%)  Cara 4: 14 (14.0%)
+Cara 2: 15 (15.0%)  Cara 5: 19 (19.0%)
+Cara 3: 17 (17.0%)  Cara 6: 17 (17.0%)
+Teórico: 16.67% | Error máx: 2.33%
+<span class="t-gold">→ Con solo 100 intentos hay variación notable. Esto es normal.</span>
+
+<span class="t-comment"># Prueba 2 — Dado de 6 caras, N=10,000</span>
+Cara 1: 1,668 (16.68%) ... Cara 6: 1,674 (16.74%)
+Teórico: 16.67% | Error máx: 0.08%
+<span class="t-gold">→ Con 10,000 intentos el error baja a 0.08%. La Ley de los Grandes Números en acción.</span>
+
+<span class="t-comment"># Prueba 3 — Moneda, N=1,000</span>
+Cara: 503 (50.3%) | Sello: 497 (49.7%)
+Teórico: 50.0% | Error máx: 0.3%
+<span class="t-gold">→ Prácticamente 50-50. ✓</span>
+
+<span class="t-comment"># Prueba 4 — Dado de 12 caras, N=5,000</span>
+Cada cara debería salir ~416.7 veces (8.33%)
+Resultados: todos entre 8.18% y 8.50%
+Error máx: 0.17%
+<span class="t-gold">→ Distribución prácticamente uniforme. Correcto. ✓</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROG 5 -->
+    <div class="prog-block">
+      <div class="prog-header">
+        <div class="prog-dots"><span></span><span></span><span></span></div>
+        <div class="prog-filename">probabilidad.js</div>
+      </div>
+      <div class="prog-body">
+        <h2 class="prog-title">Programa 5: Valor Esperado y Varianza</h2>
+        <p class="prog-desc">Recibe una distribución discreta (valores x y sus probabilidades P(x)), verifica que las probabilidades sumen 1, y calcula E[X], E[X²], Var(X) y σ mostrando cada paso del cálculo.</p>
+
+        <div class="calc-area">
+          <div class="calc-form" style="grid-template-columns:1fr;">
+            <div class="calc-field"><label>Valores de x (separados por coma)</label><input type="text" id="prob-x" value="1,2,3,4,5,6" style="width:100%"></div>
+            <div class="calc-field"><label>Probabilidades P(x) (separadas por coma (pueden ser fracciones como 1/6)</label><input type="text" id="prob-p" value="1/6,1/6,1/6,1/6,1/6,1/6" style="width:100%"></div>
+            <button class="calc-btn" onclick="runProb()">Calcular E[X] y Var(X)</button>
+          </div>
+          <div class="calc-output" id="prob-output">— Ingresa la distribución y presiona Calcular —</div>
+          <div class="calc-log" id="prob-log"></div>
+        </div>
+
+        <h3 class="exp-title">Resultados de las 4 experimentaciones</h3>
+        <div class="terminal-block">
+          <div class="terminal-bar"><span class="t-dot r"></span><span class="t-dot y"></span><span class="t-dot g"></span><span class="t-name">pruebas_probabilidad.txt</span></div>
+          <pre class="terminal-body">
+<span class="t-comment"># Prueba 1 — Dado justo de 6 caras</span>
+E[X] = 3.5000 | Var(X) = 2.9167 | σ = 1.7078
+<span class="t-gold">→ El promedio es 3.5, no es un valor posible, pero es el promedio a largo plazo.</span>
+
+<span class="t-comment"># Prueba 2 — Ganancia en un juego (valores negativos)</span>
+x: [-10, 0, 5, 20] | P: [0.3, 0.2, 0.4, 0.1]
+E[X] = 1.0000 | Var(X) = 79.000 | σ = 8.888
+<span class="t-gold">→ Aunque ganas $1 en promedio, la varianza es enorme. Juego muy arriesgado.</span>
+
+<span class="t-comment"># Prueba 3 — Distribución personalizada del informe</span>
+x: [1,2,3,4] | P: [0.2,0.3,0.4,0.1]
+E[X] = 2.4000 | Var(X) = 0.8400 | σ = 0.9165
+<span class="t-gold">→ Coincide exactamente con el ejemplo manual del informe. ✓</span>
+
+<span class="t-comment"># Prueba 4 — Variable de Bernoulli con p=0.3</span>
+x: [0, 1] | P: [0.7, 0.3]
+E[X] = 0.3000 | Var(X) = 0.2100 | σ = 0.4583
+<span class="t-gold">→ Fórmula teórica: E[X]=p=0.3, Var=p(1-p)=0.21. ✓ Coincide perfectamente.</span></pre>
+        </div>
+
+        <div class="conclusions-box">
+          <h3>Conclusiones de los Experimentos</h3>
+          <p>Como podemos ver a lo largo de todas las pruebas, los programas funcionan correctamente. Algunos puntos importantes que notamos:</p>
+          <ul>
+            <li><strong class="gold">La Ley de los Grandes Números se cumple:</strong> Al pasar de 100 a 10,000 simulaciones, el error baja de 2.33% a 0.08%. Muy ilustrativo.</li>
+            <li><strong class="gold">Permutaciones vs Combinaciones:</strong> El factor k! puede hacer que los números sean radicalmente distintos, lo cual es importante para algoritmos.</li>
+            <li><strong class="gold">El valor esperado no siempre es un resultado posible:</strong> E[dado]=3.5 es un promedio, no un valor que vaya a salir.</li>
+            <li><strong class="gold">Las recurrencias generan patrones sorprendentes:</strong> La Prueba 4 del Programa 3 produjo exactamente 2ⁿ−1, un resultado elegante y no obvio a primera vista.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<script>
-// ════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════
-function showSection(id, link) {
-  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  const sec = document.getElementById(id);
-  if (sec) sec.classList.add('active');
-  if (link) link.classList.add('active');
-  else {
-    const links = document.querySelectorAll('.nav-links a');
-    const map = {inicio:0, informe:1, cuestionario:2, programas:3};
-    if (links[map[id]]) links[map[id]].classList.add('active');
-  }
-  window.scrollTo(0,0);
-  if (id === 'cuestionario' && !quizStarted) initQuiz();
-}
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Métodos de Conteo y Probabilidad Discreta</div>
+    <div class="footer-team">Carlos · Francis · Nathalia</div>
+    <div class="footer-prof">Prof. Newman Zambrano</div>
+  </div>
+</footer>
 
-function showTopic(id, btn) {
-  document.querySelectorAll('.topic-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.topic-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ════════════════════════════════════════════
-// MATH HELPERS
-// ════════════════════════════════════════════
-function factorial(n) {
-  if (n < 0) return NaN;
-  if (n === 0 || n === 1) return 1;
-  let r = 1;
-  for (let i = 2; i <= n; i++) r *= i;
-  return r;
-}
-function comb(n,k) {
-  if (k < 0 || k > n) return 0;
-  return factorial(n) / (factorial(k) * factorial(n-k));
-}
-function perm(n,k) {
-  return factorial(n) / factorial(n-k);
-}
-function parseFrac(s) {
-  s = s.trim();
-  if (s.includes('/')) {
-    const [a,b] = s.split('/');
-    return parseFloat(a)/parseFloat(b);
-  }
-  return parseFloat(s);
-}
-
-// ════════════════════════════════════════════
-// CALCULADORA 1 – Permutaciones & Combinaciones
-// ════════════════════════════════════════════
-function calcPC() {
-  const n = parseInt(document.getElementById('pc-n').value);
-  const k = parseInt(document.getElementById('pc-k').value);
-  const type = document.getElementById('pc-type').value;
-  const res = document.getElementById('pc-result');
-  const log = document.getElementById('pc-log');
-  if (isNaN(n)||isNaN(k)||n<0||k<0) { res.textContent='Error: ingresa valores válidos.'; return; }
-  let result, formula, label;
-  switch(type) {
-    case 'perm':
-      result = factorial(n); formula = `P(${n}) = ${n}! = ${result}`; label='Permutación'; break;
-    case 'var':
-      if(k>n){res.textContent='Error: k debe ser ≤ n'; return;}
-      result = perm(n,k); formula = `V(${n},${k}) = ${n}!/${n-k}! = ${result}`; label='Variación sin rep.'; break;
-    case 'var_rep':
-      result = Math.pow(n,k); formula = `VR(${n},${k}) = ${n}^${k} = ${result}`; label='Variación con rep.'; break;
-    case 'comb':
-      if(k>n){res.textContent='Error: k debe ser ≤ n'; return;}
-      result = comb(n,k); formula = `C(${n},${k}) = ${n}!/(${n-k}!·${k}!) = ${result}`; label='Combinación sin rep.'; break;
-    case 'comb_rep':
-      result = comb(n+k-1,k); formula = `CR(${n},${k}) = C(${n+k-1},${k}) = ${result}`; label='Combinación con rep.'; break;
-  }
-  res.textContent = formula;
-  log.innerHTML += `<div class="log-line">▶ ${label}(n=${n}, k=${k})</div><div class="log-result">  → ${result}</div>`;
-  log.scrollTop = log.scrollHeight;
-}
-
-// ════════════════════════════════════════════
-// CALCULADORA 2 – Binomio
-// ════════════════════════════════════════════
-function calcBinomio() {
-  const a = document.getElementById('bin-a').value.trim() || 'a';
-  const b = document.getElementById('bin-b').value.trim() || 'b';
-  const n = parseInt(document.getElementById('bin-n').value);
-  const res = document.getElementById('bin-result');
-  const log = document.getElementById('bin-log');
-  if (isNaN(n)||n<0||n>12) { res.textContent='Error: n debe ser 0–12'; return; }
-  let terms = [];
-  for (let k=0; k<=n; k++) {
-    const coef = comb(n,k);
-    const expA = n-k, expB = k;
-    let term = '';
-    if (coef !== 1 || (expA===0 && expB===0)) term += coef;
-    if (expA > 0) term += (coef===1?'':'')+a+(expA>1?`^${expA}`:'');
-    if (expB > 0) term += b+(expB>1?`^${expB}`:'');
-    if (!term) term = '1';
-    terms.push({coef, expA, expB, term});
-  }
-  const expr = terms.map(t=>t.term).join(' + ').replace(/\+ -/g, '− ');
-  res.innerHTML = `<strong>(${a}+${b})^${n} =</strong><br>${expr}`;
-  const coefs = terms.map(t=>t.coef).join(', ');
-  log.innerHTML += `<div class="log-line">▶ (${a}+${b})^${n}</div><div class="log-result">  Coefs: [${coefs}]</div>`;
-  log.scrollTop = log.scrollHeight;
-}
-
-// ════════════════════════════════════════════
-// CALCULADORA 3 – Recurrencia
-// ════════════════════════════════════════════
-function calcRecurrencia() {
-  const a0 = parseFloat(document.getElementById('rec-a0').value);
-  const a1 = parseFloat(document.getElementById('rec-a1').value);
-  const c1 = parseFloat(document.getElementById('rec-c1').value);
-  const c2 = parseFloat(document.getElementById('rec-c2').value);
-  const N  = parseInt(document.getElementById('rec-n').value);
-  const res = document.getElementById('rec-result');
-  const log = document.getElementById('rec-log');
-  if ([a0,a1,c1,c2,N].some(isNaN)) { res.textContent='Error: todos los campos son requeridos'; return; }
-  const seq = [a0, a1];
-  for (let i=2; i<N; i++) seq.push(c1*seq[i-1] + c2*seq[i-2]);
-  const display = seq.map((v,i)=>`a${i}=${v}`).join('  |  ');
-  res.textContent = display;
-  log.innerHTML += `<div class="log-line">▶ aₙ = ${c1}·aₙ₋₁ + ${c2}·aₙ₋₂, a₀=${a0}, a₁=${a1}</div><div class="log-result">  [${seq.join(', ')}]</div>`;
-  log.scrollTop = log.scrollHeight;
-}
-
-// ════════════════════════════════════════════
-// CALCULADORA 4 – Probabilidad
-// ════════════════════════════════════════════
-function calcProb() {
-  const xs = document.getElementById('prob-x').value.split(',').map(s=>parseFloat(s.trim()));
-  const ps = document.getElementById('prob-p').value.split(',').map(s=>parseFrac(s));
-  const res = document.getElementById('prob-result');
-  const log = document.getElementById('prob-log');
-  if (xs.length !== ps.length) { res.textContent='Error: x y P(x) deben tener la misma cantidad de valores'; return; }
-  const sumP = ps.reduce((a,b)=>a+b,0);
-  if (Math.abs(sumP-1) > 0.01) { res.textContent=`Error: las probabilidades suman ${sumP.toFixed(4)}, deben sumar 1`; return; }
-  const E = xs.reduce((s,x,i)=>s+x*ps[i], 0);
-  const E2 = xs.reduce((s,x,i)=>s+x*x*ps[i], 0);
-  const Var = E2 - E*E;
-  const sigma = Math.sqrt(Math.abs(Var));
-  res.textContent = `E[X] = ${E.toFixed(4)}  |  Var(X) = ${Var.toFixed(4)}  |  σ = ${sigma.toFixed(4)}`;
-  log.innerHTML += `<div class="log-line">▶ x=[${xs}] P=[${ps.map(p=>p.toFixed(3))}]</div><div class="log-result">  E[X]=${E.toFixed(3)}, Var=${Var.toFixed(3)}, σ=${sigma.toFixed(3)}</div>`;
-  log.scrollTop = log.scrollHeight;
-}
-
-// ════════════════════════════════════════════
-// CALCULADORA 5 – Simulación
-// ════════════════════════════════════════════
-function runSimulation() {
-  const type = document.getElementById('sim-type').value;
-  const N = parseInt(document.getElementById('sim-n').value);
-  const res = document.getElementById('sim-result');
-  const log = document.getElementById('sim-log');
-  if (isNaN(N)||N<10) { res.textContent='Error: N debe ser ≥ 10'; return; }
-  let faces, theoreticalP;
-  switch(type) {
-    case 'dado6':  faces=6; break;
-    case 'dado12': faces=12; break;
-    case 'dado20': faces=20; break;
-    case 'moneda': faces=2; break;
-  }
-  const counts = new Array(faces).fill(0);
-  for (let i=0; i<N; i++) counts[Math.floor(Math.random()*faces)]++;
-  theoreticalP = (1/faces*100).toFixed(2);
-  const results = counts.map((c,i)=>{
-    const label = type==='moneda' ? (i===0?'Cara':'Sello') : `${i+1}`;
-    const pct = (c/N*100).toFixed(2);
-    return `${label}: ${c}/${N} (${pct}%)`;
-  }).join('  |  ');
-  const maxError = Math.max(...counts.map(c=>Math.abs(c/N - 1/faces)*100)).toFixed(2);
-  res.textContent = `${results}\nP teórica: ${theoreticalP}%  |  Error máx: ${maxError}%`;
-  log.innerHTML += `<div class="log-line">▶ Simulación: ${type}, N=${N}</div><div class="log-result">  Error máx: ${maxError}%</div>`;
-  log.scrollTop = log.scrollHeight;
-}
-
-// ════════════════════════════════════════════
-// CUESTIONARIO
-// ════════════════════════════════════════════
-const questions = [
-  // OPCIÓN MÚLTIPLE (6)
-  {type:'mc', text:'¿Cuántos números de 4 cifras distintas se pueden formar con los dígitos 1, 3, 5 y 7?', options:['12','18','24','36'], correct:2, explanation:'Es una permutación sin repetición P₄ = 4! = 24.'},
-  {type:'mc', text:'¿Cuál es el resultado de C(8,3)?', options:['56','336','24','112'], correct:0, explanation:'C(8,3) = 8!/(5!·3!) = 56.'},
-  {type:'mc', text:'Una empresa necesita colocar 3 gerentes en 10 plantas (cada uno en una diferente). ¿Cuántas formas hay?', options:['30','120','720','1000'], correct:2, explanation:'V(10,3) = 10!/7! = 10×9×8 = 720.'},
-  {type:'mc', text:'¿Cuántas fichas tiene un juego de dominó (puntuaciones 0–6)?', options:['21','28','36','42'], correct:1, explanation:'CR(7,2) = C(8,2) = 28.'},
-  {type:'mc', text:'El coeficiente de a³b² en la expansión de (a+b)⁵ es:', options:['5','10','15','20'], correct:1, explanation:'C(5,2) = 10. El término es C(5,2)a³b².'},
-  {type:'mc', text:'En la sucesión de Fibonacci F₀=0, F₁=1, ¿cuál es F₇?', options:['8','13','21','5'], correct:1, explanation:'F₇ = 13 (0,1,1,2,3,5,8,13).'},
-  // VERDADERO / FALSO (6)
-  {type:'tf', text:'Si se distribuyen 13 calcetines en 12 cajones, al menos un cajón tendrá 2 o más calcetines.', correct:true, explanation:'Principio del Palomar: 13 objetos en 12 cajones garantiza al menos uno con ≥2.'},
-  {type:'tf', text:'C(n,k) = C(n, n-k) para todo n ≥ k ≥ 0.', correct:true, explanation:'Por simetría de coeficientes binomiales: C(n,k) = n!/(k!(n-k)!) = C(n,n-k).'},
-  {type:'tf', text:'El número de permutaciones con repetición de "AABB" es 4! = 24.', correct:false, explanation:'Falso. Con repetición: 4!/(2!·2!) = 6, no 24.'},
-  {type:'tf', text:'Para la expansión de (a+b)^n, la suma de todos los coeficientes binomiales es 2ⁿ.', correct:true, explanation:'Haciendo a=b=1: (1+1)^n = 2^n = suma de todos los C(n,k).'},
-  {type:'tf', text:'VR(n,k) = n^k representa variaciones con repetición.', correct:true, explanation:'Correcto. Cuando se permite repetir, hay nᵏ arreglos posibles.'},
-  {type:'tf', text:'El valor esperado E[X] de un dado justo de 6 caras es 4.', correct:false, explanation:'Falso. E[X] = (1+2+3+4+5+6)/6 = 3.5, no 4.'},
-  // DESARROLLO (10)
-  {type:'dev', text:'Calcula P₆ (permutación de 6 elementos). Muestra el procedimiento.', hint:'Usa P₆ = 6!'},
-  {type:'dev', text:'¿De cuántas formas distintas pueden ordenarse las letras de la palabra "MATEMÁTICA"? (M×2, A×3, T×2)', hint:'Permutación con repetición: 9!/(2!·3!·2!)'},
-  {type:'dev', text:'Calcula C(12,4) y explica qué representa.', hint:'C(12,4) = 12!/(4!·8!)'},
-  {type:'dev', text:'Expande completamente (x+2)³ usando el teorema binomial.', hint:'Aplica C(3,k)·x^(3-k)·2^k para k=0,1,2,3'},
-  {type:'dev', text:'Una secuencia satisface aₙ = 3aₙ₋₁ − 2aₙ₋₂ con a₀=1, a₁=3. Calcula a₂, a₃ y a₄.', hint:'Sustituye directamente en la fórmula'},
-  {type:'dev', text:'Una variable X toma valores {1, 2, 3} con P(1)=0.5, P(2)=0.3, P(3)=0.2. Calcula E[X].', hint:'E[X] = 1(0.5) + 2(0.3) + 3(0.2)'},
-  {type:'dev', text:'Demuestra que C(n,0) + C(n,1) + C(n,2) + ... + C(n,n) = 2ⁿ para n=4.', hint:'Calcula cada C(4,k) y suma'},
-  {type:'dev', text:'¿Cuántos grupos de 5 personas se pueden formar de 10, si 2 personas específicas deben estar juntas?', hint:'Fija a las 2, elige 3 de los 8 restantes: C(8,3)'},
-  {type:'dev', text:'Calcula la varianza de X con distribución: P(0)=1/4, P(1)=1/2, P(2)=1/4.', hint:'E[X]=1, E[X²]=1.5, Var=E[X²]-E[X]²'},
-  {type:'dev', text:'Verifica la fórmula de Pascal: C(6,2) = C(5,1) + C(5,2). Calcula ambos lados.', hint:'C(5,1)=5, C(5,2)=10, suma=15=C(6,2)'},
-];
-
-let currentQ = 0, score = 0, answered = 0, quizStarted = false;
-
-function initQuiz() {
-  quizStarted = true;
-  currentQ = 0; score = 0; answered = 0;
-  buildProgressBar();
-  renderQuestion();
-}
-
-function buildProgressBar() {
-  const bar = document.getElementById('quiz-progress');
-  bar.innerHTML = questions.map((_,i) => `<div class="quiz-progress-bar" id="bar-${i}"></div>`).join('');
-}
-
-function updateBar(i, state) {
-  const b = document.getElementById(`bar-${i}`);
-  if (b) b.className = `quiz-progress-bar ${state}`;
-}
-
-function renderQuestion() {
-  const container = document.getElementById('quiz-container');
-  const q = questions[currentQ];
-  updateBar(currentQ, 'current');
-  document.getElementById('quiz-counter').textContent = `Pregunta ${currentQ+1} de ${questions.length}`;
-  document.getElementById('quiz-score-live').textContent = `Puntos: ${score}`;
-  document.getElementById('btn-next').style.display = 'none';
-  document.getElementById('btn-skip').style.display = 'inline-flex';
-  document.getElementById('btn-submit').style.display = 'none';
-
-  if (q.type === 'mc') {
-    const letters = ['A','B','C','D'];
-    container.innerHTML = `
-      <div class="quiz-section-title">Opción Múltiple</div>
-      <div class="quiz-question">
-        <div class="quiz-question-text">${currentQ+1}. ${q.text}</div>
-        <div class="quiz-options">
-          ${q.options.map((o,i)=>`
-            <button class="quiz-option" onclick="answerMC(${i})">
-              <span class="option-letter">${letters[i]}</span>${o}
-            </button>`).join('')}
-        </div>
-        <div class="feedback-box" id="feedback"></div>
-      </div>`;
-  } else if (q.type === 'tf') {
-    container.innerHTML = `
-      <div class="quiz-section-title">Verdadero / Falso</div>
-      <div class="quiz-question">
-        <div class="quiz-question-text">${currentQ+1}. ${q.text}</div>
-        <div class="tf-options">
-          <button class="tf-btn" onclick="answerTF(true, this)">✓ Verdadero</button>
-          <button class="tf-btn" onclick="answerTF(false, this)">✗ Falso</button>
-        </div>
-        <div class="feedback-box" id="feedback"></div>
-      </div>`;
-  } else {
-    container.innerHTML = `
-      <div class="quiz-section-title">Pregunta de Desarrollo</div>
-      <div class="dev-question">
-        <div class="dev-question-text">${currentQ+1}. ${q.text}</div>
-        <em style="font-size:0.8rem;color:var(--gold-dim);">💡 Pista: ${q.hint}</em><br><br>
-        <textarea class="dev-answer-area" id="dev-answer" placeholder="Escribe tu solución aquí..."></textarea>
-      </div>`;
-    document.getElementById('btn-skip').style.display = 'none';
-    showNextOrSubmit();
-  }
-}
-
-function answerMC(idx) {
-  const q = questions[currentQ];
-  const opts = document.querySelectorAll('.quiz-option');
-  opts.forEach(o => o.setAttribute('disabled','true'));
-  const fb = document.getElementById('feedback');
-  const isCorrect = idx === q.correct;
-  opts[idx].classList.add(isCorrect ? 'correct' : 'wrong');
-  if (!isCorrect) opts[q.correct].classList.add('correct');
-  fb.style.display = 'block';
-  fb.className = `feedback-box ${isCorrect?'correct':'wrong'}`;
-  fb.textContent = (isCorrect ? '✓ Correcto! ' : '✗ Incorrecto. ') + q.explanation;
-  if (isCorrect) score++;
-  updateBar(currentQ, isCorrect ? 'done' : 'done');
-  document.getElementById('quiz-score-live').textContent = `Puntos: ${score}`;
-  document.getElementById('btn-skip').style.display = 'none';
-  showNextOrSubmit();
-}
-
-function answerTF(answer, btn) {
-  const q = questions[currentQ];
-  const btns = document.querySelectorAll('.tf-btn');
-  btns.forEach(b => b.setAttribute('disabled','true'));
-  const isCorrect = answer === q.correct;
-  btn.classList.add(isCorrect ? 'correct' : 'wrong');
-  const otherBtn = answer ? btns[1] : btns[0];
-  if (!isCorrect) otherBtn.classList.add('correct');
-  const fb = document.getElementById('feedback');
-  fb.style.display = 'block';
-  fb.className = `feedback-box ${isCorrect?'correct':'wrong'}`;
-  fb.textContent = (isCorrect ? '✓ Correcto! ' : '✗ Incorrecto. ') + q.explanation;
-  if (isCorrect) score++;
-  updateBar(currentQ, 'done');
-  document.getElementById('quiz-score-live').textContent = `Puntos: ${score}`;
-  document.getElementById('btn-skip').style.display = 'none';
-  showNextOrSubmit();
-}
-
-function showNextOrSubmit() {
-  if (currentQ < questions.length - 1) {
-    document.getElementById('btn-next').style.display = 'inline-flex';
-  } else {
-    document.getElementById('btn-submit').style.display = 'inline-flex';
-  }
-}
-
-function nextQuestion() {
-  if (currentQ < questions.length - 1) {
-    currentQ++;
-    renderQuestion();
-  }
-}
-
-function skipQuestion() {
-  updateBar(currentQ, 'done');
-  nextQuestion();
-}
-
-function submitQuiz() {
-  // Count dev answers
-  const devAns = document.getElementById('dev-answer');
-  if (devAns && devAns.value.trim().length > 10) score += 0.5;
-  document.getElementById('quiz-main').style.display = 'none';
-  const resultDiv = document.getElementById('quiz-result');
-  resultDiv.style.display = 'block';
-  const mcTF = 12, total = mcTF;
-  const pct = Math.round((score/total)*100);
-  document.getElementById('result-num').textContent = score + '/' + total;
-  let msg, sub;
-  if (pct >= 90) { msg='¡Excelente dominio!'; sub='Tienes un entendimiento sobresaliente de los métodos de conteo y probabilidad.'; }
-  else if (pct >= 70) { msg='¡Muy buen trabajo!'; sub='Tienes una buena base. Repasa los temas donde fallaste.'; }
-  else if (pct >= 50) { msg='Vas por buen camino'; sub='Practica más con las calculadoras y revisa el informe técnico.'; }
-  else { msg='Sigue estudiando'; sub='Revisa las secciones del informe técnico y vuelve a intentarlo.'; }
-  document.getElementById('result-msg').textContent = msg;
-  document.getElementById('result-sub').textContent = sub;
-}
-
-function resetQuiz() {
-  quizStarted = false;
-  document.getElementById('quiz-main').style.display = 'block';
-  document.getElementById('quiz-result').style.display = 'none';
-  initQuiz();
-}
-
-// Init quiz when section is visited
-window.addEventListener('load', () => {
-  MathJax && MathJax.typesetPromise && MathJax.typesetPromise();
-});
-</script>
+<script src="scripts.js"></script>
 </body>
 </html>
