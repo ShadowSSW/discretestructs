@@ -246,9 +246,6 @@ body {
   flex-shrink: 0;
 }
 
-.member-name { font-size: 0.92rem; font-weight: 600; }
-.member-role { font-family: var(--ff-mono); font-size: 0.65rem; color: var(--gold-dim); }
-
 /* Info bar */
 .info-bar {
   display: flex;
@@ -1381,7 +1378,6 @@ strong.gold { color: var(--gold); }
   .page-header h1 { font-size: 1.6rem; }
   .content-area { padding: 2rem 1rem 3rem; }
   .hero-content { padding: 3rem 1rem 2.5rem; }
-  .info-bar { gap: 2rem; }
   .team-members { flex-direction: column; }
   .quiz-opts { grid-template-columns: 1fr; }
   .tf-opts { grid-template-columns: 1fr 1fr; }
@@ -1389,6 +1385,122 @@ strong.gold { color: var(--gold); }
   .calc-form { grid-template-columns: 1fr; }
   .footer-inner { flex-direction: column; text-align: center; }
   .prog-body { padding: 1.2rem; }
-  .terminal-body { font-size: 0.72rem; }
   .dev-problem { flex-direction: column; gap: 0.5rem; }
+  .experiments-cta { flex-direction: column; text-align: center; align-items: center; }
+  .sim-summary { flex-wrap: wrap; }
+  .sim-stat { min-width: 120px; }
+  .prob-metrics { flex-direction: column; }
+  .binom-terms { flex-direction: column; }
+  .examples-grid { grid-template-columns: 1fr; }
+  .hero-cards { grid-template-columns: 1fr; }
+  .sim-bar-stats { min-width: 120px; font-size: 0.7rem; }
 }
+
+/* ═══════════════════════════════════════
+   FRACCIONES VISUALES
+═══════════════════════════════════════ */
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.15em;
+  line-height: 1.1;
+}
+
+.frac-num,
+.frac-den {
+  display: block;
+  font-size: 0.8em;
+  text-align: center;
+  padding: 0 0.2em;
+  line-height: 1.3;
+}
+
+.frac-num {
+  border-bottom: 1.5px solid currentColor;
+}
+
+/* ═══════════════════════════════════════
+   NOMBRES DE INTEGRANTES (sin rol)
+═══════════════════════════════════════ */
+.member-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════
+   CTA EXPERIMENTACIONES
+═══════════════════════════════════════ */
+.experiments-cta {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2.5rem 3rem;
+  background: var(--dark2);
+  border: 1px solid var(--gold-dim);
+  margin-top: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.experiments-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 0% 50%, rgba(212,160,23,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.exp-cta-icon {
+  font-size: 2.8rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.exp-cta-text {
+  flex: 1;
+}
+
+.exp-cta-title {
+  font-family: var(--ff-display);
+  font-size: 1.3rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.exp-cta-desc {
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+.exp-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: var(--gold);
+  color: var(--black);
+  text-decoration: none;
+  font-family: var(--ff-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.exp-cta-btn:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+}
+
+.exp-cta-btn:active {
+  transform: translateY(0);
+}
+
