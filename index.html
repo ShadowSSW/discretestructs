@@ -52,21 +52,15 @@
       <div class="team-members">
         <div class="team-member">
           <div class="member-avatar">C</div>
-          <div>
-            <div class="member-name">Carlos Gabriel Pérez Capellán</div>
-          </div>
+          <div class="member-name">Carlos Gabriel Pérez Capellán</div>
         </div>
         <div class="team-member">
           <div class="member-avatar">F</div>
-          <div>
-            <div class="member-name">Francisco Javier Ventura Cabrera</div>
-          </div>
+          <div class="member-name">Francisco Javier Ventura Cabrera</div>
         </div>
         <div class="team-member">
           <div class="member-avatar">N</div>
-          <div>
-            <div class="member-name">Nathalia Elizabeth Feliz Martínez</div>
-          </div>
+          <div class="member-name">Nathalia Elizabeth Feliz Martínez</div>
         </div>
       </div>
     </div>
@@ -730,7 +724,7 @@
   <div class="page-header">
     <div class="page-header-tag">03 / Programas y Experimentación</div>
     <h1>Calculadoras y Simulaciones</h1>
-    <p>Aquí describimos los programas que desarrollamos para verificar computacionalmente los resultados. Cada uno fue probado con al menos 4 valores distintos.</p>
+    <p>Herramientas computacionales desarrolladas para verificar los resultados de cada tema. Interactúa con cada calculadora ingresando distintos valores.</p>
   </div>
   <div class="content-area">
 
@@ -742,8 +736,7 @@
       </div>
       <div class="prog-body">
         <h2 class="prog-title">Programa 1: Calculadora de Permutaciones y Combinaciones</h2>
-        <p class="prog-desc">Este programa recibe <em>n</em> y <em>k</em> y calcula los cinco tipos de agrupaciones: permutación (Pₙ), variación sin repetición (Vₙ,ₖ), variación con repetición (VRₙ,ₖ), combinación sin repetición (Cₙ,ₖ) y combinación con repetición (CRₙ,ₖ). También muestra el procedimiento paso a paso.</p>
-
+        <p class="prog-desc">Recibe <em>n</em> y <em>k</em> y calcula los cinco tipos de agrupaciones: permutación (Pₙ), variación sin repetición (Vₙ,ₖ), variación con repetición (VRₙ,ₖ), combinación sin repetición (Cₙ,ₖ) y combinación con repetición (CRₙ,ₖ). Muestra el procedimiento paso a paso.</p>
         <div class="calc-area">
           <div class="calc-form">
             <div class="calc-field"><label>n =</label><input type="number" id="pc-n" value="5" min="0" max="20"></div>
@@ -762,30 +755,6 @@
           <div class="calc-output" id="pc-output">Ingresa valores y presiona Calcular</div>
           <div class="calc-log" id="pc-log"></div>
         </div>
-          <pre class="terminal-body">
-<span class="t-comment"># Prueba 1 — n=5, k=3</span>
-Permutación P₅        = 5! = 120
-Variación sin rep.    = 5!/2! = 60
-Variación con rep.    = 5³ = 125
-Combinación sin rep.  = 5!/(2!·3!) = 10
-Combinación con rep.  = 7!/(4!·3!) = 35
-<span class="t-gold">→ Con 5 elementos tomando 3, hay 60 arreglos ordenados vs 10 grupos sin orden.</span>
-
-<span class="t-comment"># Prueba 2 — n=10, k=4</span>
-Variación sin rep.    = 10!/6! = 5,040
-Combinación sin rep.  = 10!/(6!·4!) = 210
-<span class="t-gold">→ La diferencia es k! = 4! = 24. Confirma: Cₙ,ₖ = Vₙ,ₖ / k!</span>
-
-<span class="t-comment"># Prueba 3 — n=7, k=2 (verificación del dominó)</span>
-Combinación sin rep.  = C(7,2) = 21
-Combinación con rep.  = CR(7,2) = 28
-<span class="t-gold">→ El dominó tiene 28 fichas. ✓ Las 7 adicionales son las fichas "dobles".</span>
-
-<span class="t-comment"># Prueba 4 — n=20, k=5</span>
-Combinación sin rep.  = C(20,5) = 15,504
-Combinación con rep.  = CR(20,5) = 42,504
-<span class="t-gold">→ Con solo 20 elementos hay más de 15,000 grupos. Revisar todo sería inviable.</span></pre>
-        </div>
       </div>
     </div>
 
@@ -797,8 +766,7 @@ Combinación con rep.  = CR(20,5) = 42,504
       </div>
       <div class="prog-body">
         <h2 class="prog-title">Programa 2: Expansión del Teorema Binomial</h2>
-        <p class="prog-desc">Recibe el exponente <em>n</em> y los términos <em>a</em> y <em>b</em>, y genera la expansión completa de (a+b)ⁿ mostrando los coeficientes, el triángulo de Pascal hasta esa fila, y cada término por separado.</p>
-
+        <p class="prog-desc">Recibe el exponente <em>n</em> y los términos <em>a</em> y <em>b</em>, y genera la expansión completa de (a+b)ⁿ mostrando los coeficientes binomiales y cada término por separado.</p>
         <div class="calc-area">
           <div class="calc-form">
             <div class="calc-field"><label>a =</label><input type="text" id="bn-a" value="x" placeholder="símbolo o número"></div>
@@ -806,29 +774,8 @@ Combinación con rep.  = CR(20,5) = 42,504
             <div class="calc-field"><label>n =</label><input type="number" id="bn-n" value="3" min="0" max="10"></div>
             <button class="calc-btn" onclick="runBinomio()">Expandir</button>
           </div>
-          <div class="calc-output" id="bn-output" style="text-align:left;line-height:1.9">Ingresa los términos y presiona Expandir</div>
+          <div class="calc-output" id="bn-output">Ingresa los términos y presiona Expandir</div>
           <div class="calc-log" id="bn-log"></div>
-        </div>
-          <pre class="terminal-body">
-<span class="t-comment"># Prueba 1 — (a+b)⁴</span>
-Coeficientes: [1, 4, 6, 4, 1]
-Resultado: a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴
-<span class="t-gold">→ Los coeficientes son simétricos. Propiedad: C(n,k) = C(n,n-k).</span>
-
-<span class="t-comment"># Prueba 2 — (x−3y)³</span>
-a=x, b=−3y, n=3
-Resultado: x³ − 9x²y + 27xy² − 27y³
-<span class="t-gold">→ Los signos alternan porque b es negativo. Hay que tener cuidado con eso.</span>
-
-<span class="t-comment"># Prueba 3 — Verificación numérica (2+3)⁵</span>
-(2+3)⁵ = 5⁵ = 3125
-Suma de términos: 32+240+720+1080+810+243 = 3125
-<span class="t-gold">→ Ambos métodos dan 3125. ✓ El teorema es correcto.</span>
-
-<span class="t-comment"># Prueba 4 — Suma de coeficientes de (a+b)⁶</span>
-Coeficientes: [1, 6, 15, 20, 15, 6, 1]
-Suma: 1+6+15+20+15+6+1 = 64 = 2⁶
-<span class="t-gold">→ Confirma: la suma de coeficientes siempre es 2ⁿ. ✓</span></pre>
         </div>
       </div>
     </div>
@@ -840,38 +787,19 @@ Suma: 1+6+15+20+15+6+1 = 64 = 2⁶
         <div class="prog-filename">recurrencia.js</div>
       </div>
       <div class="prog-body">
-        <h2 class="prog-title">Programa 3: Resolución de Relaciones de Recurrencia</h2>
-        <p class="prog-desc">Recibe los coeficientes c₁ y c₂, los valores iniciales a₀ y a₁, y el número N de términos deseados. Genera la secuencia completa mostrando cada cálculo individual.</p>
-
+        <h2 class="prog-title">Programa 3: Relaciones de Recurrencia</h2>
+        <p class="prog-desc">Recibe los coeficientes c₁ y c₂, los valores iniciales a₀ y a₁, y el número N de términos. Genera la secuencia completa mostrando cada valor calculado.</p>
         <div class="calc-area">
           <div class="calc-form">
             <div class="calc-field"><label>a₀</label><input type="number" id="rec-a0" value="0"></div>
             <div class="calc-field"><label>a₁</label><input type="number" id="rec-a1" value="1"></div>
             <div class="calc-field"><label>c₁</label><input type="number" id="rec-c1" value="1"></div>
             <div class="calc-field"><label>c₂</label><input type="number" id="rec-c2" value="1"></div>
-            <div class="calc-field"><label>N</label><input type="number" id="rec-n" value="10" min="3" max="25"></div>
+            <div class="calc-field"><label>N</label><input type="number" id="rec-n" value="10" min="3" max="20"></div>
             <button class="calc-btn" onclick="runRec()">Generar</button>
           </div>
           <div class="calc-output" id="rec-output">Ingresa los valores y presiona Generar</div>
           <div class="calc-log" id="rec-log"></div>
-        </div>
-          <pre class="terminal-body">
-<span class="t-comment"># Prueba 1 — Fibonacci: aₙ=aₙ₋₁+aₙ₋₂, a₀=0, a₁=1</span>
-[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
-<span class="t-gold">→ La secuencia más famosa de la matemática. Aparece en la naturaleza.</span>
-
-<span class="t-comment"># Prueba 2 — aₙ=5aₙ₋₁−6aₙ₋₂, a₀=1, a₁=4</span>
-[1, 4, 14, 46, 146, 454, 1394]
-Verificación: a₂ = −2²+2·3² = −4+18 = 14 ✓
-<span class="t-gold">→ Coincide con la fórmula cerrada aₙ = −2ⁿ + 2·3ⁿ.</span>
-
-<span class="t-comment"># Prueba 3 — aₙ=2aₙ₋₁+aₙ₋₂, a₀=1, a₁=1</span>
-[1, 1, 3, 7, 17, 41, 99, 239]
-<span class="t-gold">→ Crecimiento más rápido. Raíces: r = 1 ± √2.</span>
-
-<span class="t-comment"># Prueba 4 — aₙ=3aₙ₋₁−2aₙ₋₂, a₀=0, a₁=1</span>
-[0, 1, 3, 7, 15, 31, 63, 127]
-<span class="t-gold">→ ¡Sorpresa! Los resultados son exactamente 2ⁿ−1.</span></pre>
         </div>
       </div>
     </div>
@@ -884,8 +812,7 @@ Verificación: a₂ = −2²+2·3² = −4+18 = 14 ✓
       </div>
       <div class="prog-body">
         <h2 class="prog-title">Programa 4: Simulación de Probabilidad</h2>
-        <p class="prog-desc">Simula lanzamientos de dado o moneda y compara los resultados empíricos con las probabilidades teóricas. Demuestra la <strong>Ley de los Grandes Números</strong>: a más ensayos, más nos acercamos al valor teórico.</p>
-
+        <p class="prog-desc">Simula lanzamientos de dado o moneda y compara los resultados empíricos con las probabilidades teóricas. A mayor número de ensayos, más se acercan los resultados al valor esperado (Ley de los Grandes Números).</p>
         <div class="calc-area">
           <div class="calc-form">
             <div class="calc-field"><label>Tipo</label>
@@ -896,35 +823,11 @@ Verificación: a₂ = −2²+2·3² = −4+18 = 14 ✓
                 <option value="dado20">Dado de 20 caras</option>
               </select>
             </div>
-            <div class="calc-field"><label>N</label><input type="number" id="sim-n" value="1000" min="10" max="100000"></div>
+            <div class="calc-field"><label>Lanzamientos</label><input type="number" id="sim-n" value="1000" min="10" max="100000"></div>
             <button class="calc-btn" onclick="runSim()">▶ Simular</button>
           </div>
           <div class="calc-output" id="sim-output">Selecciona un tipo y presiona Simular</div>
           <div class="calc-log" id="sim-log"></div>
-        </div>
-          <pre class="terminal-body">
-<span class="t-comment"># Prueba 1 — Dado de 6 caras, N=100</span>
-Cara 1: 18 (18.0%)  Cara 4: 14 (14.0%)
-Cara 2: 15 (15.0%)  Cara 5: 19 (19.0%)
-Cara 3: 17 (17.0%)  Cara 6: 17 (17.0%)
-Teórico: 16.67% | Error máx: 2.33%
-<span class="t-gold">→ Con solo 100 intentos hay variación notable. Esto es normal.</span>
-
-<span class="t-comment"># Prueba 2 — Dado de 6 caras, N=10,000</span>
-Cara 1: 1,668 (16.68%) ... Cara 6: 1,674 (16.74%)
-Teórico: 16.67% | Error máx: 0.08%
-<span class="t-gold">→ Con 10,000 intentos el error baja a 0.08%. La Ley de los Grandes Números en acción.</span>
-
-<span class="t-comment"># Prueba 3 — Moneda, N=1,000</span>
-Cara: 503 (50.3%) | Sello: 497 (49.7%)
-Teórico: 50.0% | Error máx: 0.3%
-<span class="t-gold">→ Prácticamente 50-50. ✓</span>
-
-<span class="t-comment"># Prueba 4 — Dado de 12 caras, N=5,000</span>
-Cada cara debería salir ~416.7 veces (8.33%)
-Resultados: todos entre 8.18% y 8.50%
-Error máx: 0.17%
-<span class="t-gold">→ Distribución prácticamente uniforme. Correcto. ✓</span></pre>
         </div>
       </div>
     </div>
@@ -937,25 +840,30 @@ Error máx: 0.17%
       </div>
       <div class="prog-body">
         <h2 class="prog-title">Programa 5: Valor Esperado y Varianza</h2>
-        <p class="prog-desc">Recibe una distribución discreta (valores x y sus probabilidades P(x)), verifica que las probabilidades sumen 1, y calcula E[X], E[X²], Var(X) y σ mostrando cada paso del cálculo.</p>
-
+        <p class="prog-desc">Recibe una distribución de probabilidad discreta, verifica que las probabilidades sumen 1, y calcula E[X], Var(X) y la desviación estándar σ, mostrando la tabla de distribución completa.</p>
         <div class="calc-area">
           <div class="calc-form" style="grid-template-columns:1fr;">
-            <div class="calc-field"><label>Valores de x (separados por coma)</label><input type="text" id="prob-x" value="1,2,3,4,5,6" style="width:100%"></div>
-            <div class="calc-field"><label>Probabilidades P(x) (separadas por coma (pueden ser fracciones como 1/6)</label><input type="text" id="prob-p" value="1/6,1/6,1/6,1/6,1/6,1/6" style="width:100%"></div>
+            <div class="calc-field">
+              <label>Valores de x (separados por coma)</label>
+              <input type="text" id="prob-x" value="1,2,3,4,5,6" style="width:100%">
+            </div>
+            <div class="calc-field">
+              <label>Probabilidades P(x) — pueden ser fracciones como 1/6</label>
+              <input type="text" id="prob-p" value="1/6,1/6,1/6,1/6,1/6,1/6" style="width:100%">
+            </div>
             <button class="calc-btn" onclick="runProb()">Calcular E[X] y Var(X)</button>
           </div>
           <div class="calc-output" id="prob-output">Ingresa los valores de x y sus probabilidades</div>
           <div class="calc-log" id="prob-log"></div>
         </div>
-          <pre class="terminal-body">
-<span class="t-comment"># Prueba 1 — Dado justo de 6 caras</span>
-        <div class="conclusions-box">
-          <h3>Observaciones generales</h3>
-          <p>A partir del uso de estas calculadoras se pueden identificar algunos comportamientos importantes: la Ley de los Grandes Números se hace visible cuando se aumenta el número de simulaciones, la diferencia entre permutaciones y combinaciones se vuelve muy clara al comparar resultados con los mismos valores de n y k, y el valor esperado no siempre corresponde a un resultado posible del experimento.</p>
-          <p>Las corridas experimentales completas, con capturas de pantalla y análisis detallado, se encuentran en el documento adjunto.</p>
-        </div>
       </div>
+    </div>
+
+    <!-- OBSERVACIONES -->
+    <div class="conclusions-box" style="margin-top:2.5rem;">
+      <h3>Observaciones generales</h3>
+      <p>A partir del uso de estas calculadoras se pueden identificar algunos comportamientos importantes: la Ley de los Grandes Números se hace visible cuando se aumenta el número de simulaciones, la diferencia entre permutaciones y combinaciones se vuelve muy clara al comparar resultados con los mismos valores de n y k, y el valor esperado no siempre corresponde a un resultado posible del experimento.</p>
+      <p>Las corridas experimentales completas, con capturas de pantalla y análisis detallado, se encuentran en el documento adjunto.</p>
     </div>
 
     <!-- BLOQUE DE EXPERIMENTACIONES -->
@@ -965,7 +873,7 @@ Error máx: 0.17%
         <div class="exp-cta-title">Registro de Experimentaciones</div>
         <div class="exp-cta-desc">El documento incluye las corridas realizadas con cada programa, capturas de pantalla de los resultados y un análisis propio del equipo sobre los patrones observados.</div>
       </div>
-      <a href="experimentaciones.pdf" target="_blank" class="exp-cta-btn" id="expBtn">
+      <a href="experimentaciones.pdf" target="_blank" class="exp-cta-btn">
         Ver experimentaciones ↗
       </a>
     </div>
