@@ -177,20 +177,88 @@ function runBinomio() {
     return;
   }
 
+  // Parse b to detect its numeric coefficient and symbolic part
+  // e.g. "-2y" → coefB=-2, symB="y"
+  // e.g. "y"   → coefB=1,  symB="y"
+  // e.g. "-y"  → coefB=-1, symB="y"
+  // e.g. "3"   → coefB=3,  symB=""
+  function parseTerm(str) {
+    str = str.trim();
+    const match = str.match(/^([+-]?\d*\.?\d*)([a-zA-Z].*)$/);
+    if (match) {
+      const numPart = match[1];
+      const sym     = match[2];
+      let coef = numPart === '' || numPart === '+' ? 1
+               : numPart === '-' ? -1
+               : parseFloat(numPart);
+      return { coef, sym };
+    }
+    // purely numeric
+    const num = parseFloat(str);
+    return isNaN(num) ? { coef: 1, sym: str } : { coef: num, sym: '' };
+  }
+
+  const { coef: bCoef, sym: bSym } = parseTerm(b);
+  const { coef: aCoef, sym: aSym } = parseTerm(a);
+  const aIsPureNum = aSym === '';
+  const bIsPureNum = bSym === '';
+
   const terms = [];
   for (let k = 0; k <= n; k++) {
     const c  = comb(n, k);
     const eA = n - k;
     const eB = k;
-    let termStr = '';
-    if (c !== 1 || (eA === 0 && eB === 0)) termStr += c;
-    if (eA > 0) termStr += a + (eA > 1 ? `<sup>${eA}</sup>` : '');
-    if (eB > 0) termStr += b + (eB > 1 ? `<sup>${eB}</sup>` : '');
-    if (!termStr) termStr = '1';
-    terms.push({ c, eA, eB, str: termStr });
+
+    // Full numeric coefficient of this term: C(n,k) * aCoef^eA * bCoef^eB
+    const numCoef = c * Math.pow(aCoef, eA) * Math.pow(bCoef, eB);
+    const roundedCoef = Math.abs(numCoef - Math.round(numCoef)) < 1e-9
+                      ? Math.round(numCoef) : parseFloat(numCoef.toFixed(4));
+
+    // Symbolic parts
+    const symAPow = aSym === '' ? '' :
+                    eA === 0 ? '' :
+                    eA === 1 ? aSym : `${aSym}<sup>${eA}</sup>`;
+
+    const symBPow = bSym === '' ? '' :
+                    eB === 0 ? '' :
+                    eB === 1 ? bSym : `${bSym}<sup>${eB}</sup>`;
+
+    const symPart = symAPow + symBPow;
+
+    // Build display string
+    let termStr;
+    if (symPart === '') {
+      // Fully numeric term
+      termStr = String(roundedCoef);
+    } else if (roundedCoef === 1) {
+      termStr = symPart;
+    } else if (roundedCoef === -1) {
+      termStr = `-${symPart}`;
+    } else {
+      termStr = `${roundedCoef}${symPart}`;
+    }
+
+    terms.push({ c, eA, eB, coef: roundedCoef, str: termStr });
   }
 
-  const expr = terms.map(t => t.str).join(' + ');
+  // Check if all terms are purely numeric (no symbolic parts)
+  const isFullyNumeric = terms.every(t => aSym === '' && bSym === '');
+  const numericTotal = isFullyNumeric
+    ? terms.reduce((sum, t) => sum + t.coef, 0)
+    : null;
+
+  // Join: handle sign so we never get "+ -" or "+-"
+  const expr = terms.map((t, i) => {
+    if (i === 0) return t.str;
+    if (t.coef < 0) return ` - ${t.str.replace(/^-/, '')}`;
+    return ` + ${t.str}`;
+  }).join('');
+
+  const totalRow = numericTotal !== null ? `
+    <div class="result-answer" style="margin-top:0;border-top:1px solid var(--dark4)">
+      <span class="answer-label">Suma total</span>
+      <span class="answer-value">${numericTotal.toLocaleString()}</span>
+    </div>` : '';
 
   out.innerHTML = `
     <div class="result-header">Expansión de (${a}+${b})<sup>${n}</sup></div>
@@ -208,10 +276,11 @@ function runBinomio() {
           <div class="binom-term-expr">${t.str}</div>
         </div>`).join('')}
     </div>
-    <div class="result-answer" style="margin-top:1.2rem">
-      <span class="answer-label">Resultado</span>
+    <div class="result-answer" style="margin-top:1.2rem${numericTotal !== null ? ';border-bottom:1px solid var(--dark4)' : ''}">
+      <span class="answer-label">${numericTotal !== null ? 'Términos' : 'Resultado'}</span>
       <span class="answer-value" style="font-size:0.9rem;letter-spacing:0">${expr}</span>
-    </div>`;
+    </div>
+    ${totalRow}`;
 
   addLog('bn-log', `(${a}+${b})^${n}`, `[${terms.map(t=>t.c).join(', ')}]`);
 }
